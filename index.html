@@ -1103,7 +1103,8 @@ fbq('init','747158551764136');fbq('track','PageView');
       supabase: "https://dbxafbczhrdmruhhcitt.supabase.co",
       key: "sb_publishable_d4TwbbBe9R2ZXFx8ObvIUA__36rfOKi",
       trakyo: "https://app.trakyo.io/api/platforms/custom-form/0dac5cf5-5a10-4f2a-a932-4699a51677da/webhook",
-      touchpoint: "https://columapc.app.n8n.cloud/webhook/49834c5a-2150-4de1-abad-f50d17e064f2"
+      touchpoint: "https://columapc.app.n8n.cloud/webhook/49834c5a-2150-4de1-abad-f50d17e064f2",
+      events: "https://columapc.app.n8n.cloud/webhook/gt-event-capture"
     };
     var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
     var TIERS = { GA: "General Admission", VIP: "VIP Experience" };
@@ -1112,7 +1113,7 @@ fbq('init','747158551764136');fbq('track','PageView');
     try {
       var qs = new URLSearchParams(location.search), found = {}, any = false;
       UTM_KEYS.forEach(function (k) { var v = qs.get(k); if (v) { found[k] = v; any = true; } });
-      if (any) { sessionStorage.setItem("apc_utm", JSON.stringify(found)); sessionStorage.setItem("utm_params", JSON.stringify(found)); }
+      if (any && !sessionStorage.getItem("apc_utm")) { sessionStorage.setItem("apc_utm", JSON.stringify(found)); sessionStorage.setItem("utm_params", JSON.stringify(found)); }
     } catch (e) {}
     function utm() {
       var a = {}, b = {};
@@ -1124,13 +1125,14 @@ fbq('init','747158551764136');fbq('track','PageView');
     var modal = document.getElementById("checkout"), form = document.getElementById("co-form");
     if (!modal || !form) return;
     var err = document.getElementById("co-error"), submit = document.getElementById("co-submit");
-    var openedAt = 0, lastTrigger = null;
+    var openedAt = 0, lastTrigger = null, busy = false;
 
     function trakyoId() {
+      try { if (window.trakyo_id) return String(window.trakyo_id).trim(); } catch (e) {}
+      try { var c = ("; " + document.cookie).split("; trakyo_id="); if (c.length === 2) { var v = decodeURIComponent(c.pop().split(";").shift()); if (v) return v.trim(); } } catch (e) {}
+      try { var l = localStorage.getItem("trakyo_id"); if (l) return l.trim(); } catch (e) {}
       var f = form.querySelector('input[name="trakyo_id"]');
       if (f && f.value) return f.value.trim();
-      var g = document.querySelector('input[name="trakyo_id"]');
-      if (g && g.value) return g.value.trim();
       try { return new URLSearchParams(location.search).get("trakyo_id") || ""; } catch (e) { return ""; }
     }
     function track() { try { if (window.fbq) window.fbq.apply(window, arguments); } catch (e) {} }
@@ -1147,6 +1149,21 @@ fbq('init','747158551764136');fbq('track','PageView');
     }
     function capped(promise, ms) {
       return Promise.race([promise.catch(function () {}), new Promise(function (r) { setTimeout(r, ms || 3000); })]);
+    }
+    function fireEvent(type, d) {
+      try {
+        var email = (d.email || "").trim().toLowerCase();
+        if (!email) return;
+        var u = utm(), nn = function (v) { return v ? v : null; }, tid = trakyoId();
+        var body = {
+          event_type: type, firstName: nn(d.firstName), lastName: nn(d.lastName), email: email, phone: nn(d.phone),
+          purchase_city: "Dublin", purchase_tier_name: nn(d.tierName), trakyo_id: nn(tid),
+          utm_source: nn(u.utm_source), utm_medium: nn(u.utm_medium), utm_campaign: nn(u.utm_campaign),
+          utm_content: nn(u.utm_content), utm_term: nn(u.utm_term),
+          page_url: location.href, submitted_at: new Date().toISOString()
+        };
+        fetch(CFG.events, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), keepalive: true }).catch(function () {});
+      } catch (e) {}
     }
 
     function open(tier) {
@@ -1168,6 +1185,7 @@ fbq('init','747158551764136');fbq('track','PageView');
       if (e.target.closest("[data-co-close]")) close();
     });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) close(); });
+    window.addEventListener("pageshow", function (ev) { if (ev.persisted) { busy = false; submit.disabled = false; submit.textContent = "Continue to checkout"; } });
 
     function phoneProblem(dial, raw) {
       var digits = (raw || "").replace(/[^\d]/g, "").replace(/^0+/, "");
@@ -1187,10 +1205,12 @@ fbq('init','747158551764136');fbq('track','PageView');
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
+      if (busy) return;
       err.hidden = true;
       if (form.company_website.value.trim() !== "" || Date.now() - openedAt < 3000) { if (form.company_website.value.trim() !== "") return; }
       var first = form.firstName.value.trim(), last = form.lastName.value.trim(), email = form.email.value.trim();
-      var tier = (form.querySelector('input[name="tier"]:checked') || {}).value || "GA", tierName = TIERS[tier];
+      var tierInput = form.querySelector('input[name="tier"]:checked'), tier = (tierInput || {}).value || "GA";
+      var tierLabel = tierInput && tierInput.parentElement.querySelector("b"), tierName = tierLabel ? tierLabel.textContent.trim() : TIERS[tier];
       if (!first) return fail("First name is required.");
       if (!last) return fail("Last name is required.");
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail("Please enter a valid email address.");
@@ -1199,6 +1219,8 @@ fbq('init','747158551764136');fbq('track','PageView');
       if (Date.now() - openedAt < 3000) return fail("One moment, then press continue again.");
       var phone = dial + form.phone.value.replace(/[^\d]/g, "").replace(/^0+/, "");
       var name = (first + " " + last).trim(), tid = trakyoId(), u = utm();
+      busy = true; submit.disabled = true;
+      fireEvent("reserve", { firstName: first, lastName: last, email: email, phone: phone, tierName: tierName });
 
       track("track", "InitiateCheckout"); track("track", "Lead");
       touchpoint({ touchpoint_type: "form_lead", name: name, email: email, phone: phone, action: "checkout_form_submit", entry_type: tierName });
@@ -1231,7 +1253,7 @@ fbq('init','747158551764136');fbq('track','PageView');
         location.href = CFG.checkout + (qsOut ? "?" + qsOut : "");
       } catch (x) {
         fail("Something went wrong. Please try again.");
-        submit.disabled = false; submit.textContent = "Continue to checkout";
+        busy = false; submit.disabled = false; submit.textContent = "Continue to checkout";
       }
     });
   })();
