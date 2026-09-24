@@ -369,7 +369,7 @@ fbq('init','747158551764136');fbq('track','PageView');
   .co-title em { font-style: italic; font-weight: 300; color: var(--pink); }
   .co-form { display: grid; gap: 14px; }
   .co-hp { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); left: -9999px; }
-  .co-tiers { border: 0; margin: 0 0 4px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .co-tiers { border: 0; margin: 0 0 4px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
   .co-tiers legend { color: var(--on-ink-mute); font-size: 10.5px; margin-bottom: 8px; padding: 0; }
   .co-tier { position: relative; cursor: pointer; }
   .co-tier input { position: absolute; opacity: 0; }
@@ -875,7 +875,7 @@ fbq('init','747158551764136');fbq('track','PageView');
       <div class="tiers">
         <article class="tier">
           <div class="tier-head"><h3 class="tier-name">General Admission</h3><span class="tier-days mono">Saturday 19</span></div>
-          <div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">On sale now</span></div>
+          <div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Early bird pricing</span></div>
           <ul>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Main conference, 10:00–18:00</li>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Eight industry-leading speakers</li>
@@ -886,7 +886,7 @@ fbq('init','747158551764136');fbq('track','PageView');
         <article class="tier">
           <span class="tier-flag">Recommended</span>
           <div class="tier-head"><h3 class="tier-name">VIP Experience</h3><span class="tier-days mono">Saturday 19 + Sunday 20</span></div>
-          <div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">On sale now</span></div>
+          <div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Early bird pricing</span></div>
           <ul>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Everything in General Admission</li>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Sunday Gala: black tie, castle-style venue</li>
@@ -895,15 +895,15 @@ fbq('init','747158551764136');fbq('track','PageView');
           <a class="pill pill-light btn" href="#tickets" data-checkout="VIP">Get VIP ticket</a>
         </article>
         <article class="tier founder">
-          <span class="tier-flag">Application</span>
+          <span class="tier-flag">Early bird</span>
           <div class="tier-head"><h3 class="tier-name">VVIP Experience</h3><span class="tier-days mono">Fri 18 + Sat 19 + Sun 20</span></div>
-          <div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Limited to 20 seats</span></div>
+          <div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Early bird · 20 seats</span></div>
           <ul>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Everything in VIP</li>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Friday hot seats, workshops and expert roundtables</li>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Founders’ dinner on Friday night</li>
           </ul>
-          <a class="pill btn btn-gold" href="https://aplayerswaitlist.com/" target="_blank" rel="noopener">Request access</a>
+          <a class="pill btn btn-gold" href="#tickets" data-checkout="VVIP">Get VVIP ticket</a>
         </article>
         <article class="tier team-tier"><span class="tier-flag quiet">From 5 seats</span><div class="tier-head"><h3 class="tier-name">Team</h3><span class="tier-days mono">For companies &amp; clients</span></div><div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Co-branded</span></div><ul><li><svg aria-hidden="true"><use href="#check"/></svg>Your seats together in a reserved block</li><li><svg aria-hidden="true"><use href="#check"/></svg>Your logo on co-branded lanyards</li><li><svg aria-hidden="true"><use href="#check"/></svg>Named badges for everyone you bring</li></ul><a class="pill btn btn-grey" href="#tickets" data-team>Enquire for teams</a></article>
       </div>
@@ -1005,6 +1005,7 @@ fbq('init','747158551764136');fbq('track','PageView');
         <legend class="mono">Choose your ticket</legend>
         <label class="co-tier"><input type="radio" name="tier" id="co-tier-ga" value="GA" checked><span><b>General Admission</b><small>Saturday 19 · Conference &amp; afterparty</small></span></label>
         <label class="co-tier"><input type="radio" name="tier" id="co-tier-vip" value="VIP"><span><b>VIP Experience</b><small>Sat 19 + Sun 20 · Adds the Gala</small></span></label>
+        <label class="co-tier"><input type="radio" name="tier" id="co-tier-vvip" value="VVIP"><span><b>VVIP Experience</b><small>All three days · Founders Day</small></span></label>
       </fieldset>
       <div class="co-row">
         <label class="co-field"><span class="mono">First name</span><input id="co-first" name="firstName" autocomplete="given-name" maxlength="100" required></label>
@@ -1211,7 +1212,11 @@ fbq('init','747158551764136');fbq('track','PageView');
   (function () {
     var CFG = {
       city: "Dublin",
-      checkout: "https://whop.com/checkout/plan_gEV5OIygbHlJz",
+      checkout: {
+        GA: "https://whop.com/checkout/ch_E77ZaalLi3SL8aA/",
+        VIP: "https://whop.com/checkout/ch_xM3urnTZIY8Yyfd/",
+        VVIP: "https://whop.com/checkout/ch_Xt31mMYhDdbZWlB/"
+      },
       supabase: "https://dbxafbczhrdmruhhcitt.supabase.co",
       key: "sb_publishable_d4TwbbBe9R2ZXFx8ObvIUA__36rfOKi",
       trakyo: "https://app.trakyo.io/api/platforms/custom-form/0dac5cf5-5a10-4f2a-a932-4699a51677da/webhook",
@@ -1219,7 +1224,7 @@ fbq('init','747158551764136');fbq('track','PageView');
       events: "https://columapc.app.n8n.cloud/webhook/gt-event-capture"
     };
     var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
-    var TIERS = { GA: "General Admission", VIP: "VIP Experience" };
+    var TIERS = { GA: "General Admission", VIP: "VIP Experience", VVIP: "VVIP Experience" };
 
     // keep campaign tags for the session, like the London site
     try {
@@ -1279,7 +1284,8 @@ fbq('init','747158551764136');fbq('track','PageView');
     }
 
     function open(tier) {
-      if (tier === "GA" || tier === "VIP") form.querySelector('input[name="tier"][value="' + tier + '"]').checked = true;
+      var pick = tier && form.querySelector('input[name="tier"][value="' + tier + '"]');
+      if (pick) pick.checked = true;
       err.hidden = true;
       modal.hidden = false;
       document.documentElement.style.overflow = "hidden";
@@ -1362,7 +1368,8 @@ fbq('init','747158551764136');fbq('track','PageView');
         UTM_KEYS.forEach(function (k) { if (u[k]) q.set(k, u[k]); });
         if (tid) q.set("trakyo_id", tid);
         var qsOut = q.toString();
-        location.href = CFG.checkout + (qsOut ? "?" + qsOut : "");
+        var dest = CFG.checkout[tier] || CFG.checkout.GA;
+        location.href = dest + (qsOut ? "?" + qsOut : "");
       } catch (x) {
         fail("Something went wrong. Please try again.");
         busy = false; submit.disabled = false; submit.textContent = "Continue to checkout";
