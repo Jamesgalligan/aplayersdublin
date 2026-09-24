@@ -320,7 +320,7 @@ fbq('init','747158551764136');fbq('track','PageView');
   @media (max-width: 520px) { .announce { justify-self: stretch; padding: 18px; } .announce-units { gap: 0 14px; } }
 
   /* ---------- team package ---------- */
-  .team-tier .tier-flag.quiet { background: transparent; color: var(--pink); box-shadow: inset 0 0 0 1px rgba(231,185,192,.5); }
+  .team-tier .tier-flag.quiet { background: var(--ink); color: var(--pink); box-shadow: inset 0 0 0 1px rgba(231,185,192,.45); }
   #team .co-panel { width: min(100%, 740px); }
   .tm-grid { display: grid; grid-template-columns: minmax(0, 1fr) 224px; gap: 24px; align-items: start; }
   .tm-preview { display: grid; gap: 16px; justify-items: center; position: sticky; top: 0; }
@@ -379,6 +379,9 @@ fbq('init','747158551764136');fbq('track','PageView');
   .co-field { display: grid; gap: 6px; }
   .co-field .mono { color: var(--on-ink-mute); font-size: 10.5px; }
   .co-field input, .co-phone select { width: 100%; font: inherit; font-size: 16px; color: var(--on-ink); background: var(--black); border: 0; border-radius: 12px; padding: 12px 14px; box-shadow: inset 0 0 0 1px var(--line); }
+  .co-field textarea { width: 100%; font: inherit; font-size: 15px; line-height: 1.45; color: var(--on-ink); background: var(--black); border: 0; border-radius: 12px; padding: 12px 14px; box-shadow: inset 0 0 0 1px var(--line); resize: vertical; min-height: 78px; }
+  .co-field textarea:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--pink); }
+  .co-field textarea::placeholder { color: rgba(242,242,239,.35); }
   .co-field input:focus, .co-phone select:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--pink); }
   .co-phone { display: grid; grid-template-columns: 112px 1fr; gap: 8px; }
   .co-phone select { padding-inline: 10px; appearance: none; -webkit-appearance: none; }
@@ -1037,6 +1040,7 @@ fbq('init','747158551764136');fbq('track','PageView');
           <input id="tm-logo" name="logo" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
         </div>
         <div class="tm-colour"><label class="mono" for="tm-colour">Brand colour</label><input id="tm-colour" type="color" value="#E7B9C0"></div>
+        <label class="co-field"><span class="mono">Anything else? (optional)</span><textarea id="tm-notes" name="notes" rows="3" maxlength="1000" placeholder="Names of who's coming, dietary needs, travel dates, anything we should know."></textarea></label>
         <p class="co-error" id="tm-error" role="alert" hidden></p>
         <button class="pill pill-light co-submit" id="tm-submit" type="submit">Request team seats</button>
         <p class="co-note">We reply within 24 hours with seats and pricing.</p>
@@ -1418,10 +1422,12 @@ fbq('init','747158551764136');fbq('track','PageView');
     // ---- logo ----
     function dominantColour(img) {
       try {
-        var c = document.createElement("canvas"), n = 48;
+        var c = document.createElement("canvas"), n = 64;
         c.width = c.height = n;
         var x = c.getContext("2d");
-        x.drawImage(img, 0, 0, n, n);
+        var iw = img.naturalWidth || 300, ih = img.naturalHeight || 300;
+        var sc = Math.min(n / iw, n / ih), dw = Math.max(1, iw * sc), dh = Math.max(1, ih * sc);
+        x.drawImage(img, (n - dw) / 2, (n - dh) / 2, dw, dh);
         var d = x.getImageData(0, 0, n, n).data, counts = {}, best = null, bestN = 0;
         for (var i = 0; i < d.length; i += 4) {
           var r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
@@ -1463,7 +1469,8 @@ fbq('init','747158551764136');fbq('track','PageView');
           slot.innerHTML = '<img alt="">';
           slot.querySelector("img").src = src;
           drop.innerHTML = "<b>" + file.name.slice(0, 40) + "</b><small>Click to replace</small>";
-          if (!isSvg) { var dom = dominantColour(img); if (dom) { colour.value = dom; } }
+          var dom = dominantColour(img);          // works for SVG too, drawn from a data URL
+          if (dom) colour.value = dom;
           refresh();
         };
         img.onerror = function () { fail("That image could not be read. Try a PNG or JPG."); };
@@ -1512,13 +1519,14 @@ fbq('init','747158551764136');fbq('track','PageView');
       if (Date.now() - openedAt < 3000) return fail("One moment, then press request again.");
       var phone = form.tm_dial ? "" : document.getElementById("tm-dial").value + form.phone.value.replace(/[^\d]/g, "").replace(/^0+/, "");
       var parts = contact.split(/\s+/), first = parts.shift() || contact, last = parts.join(" ");
+      var notes = (form.notes.value || "").trim().slice(0, 1000);
       var tid = trakyoId(), u = utm(), nn = function (v) { return v ? v : null; };
 
       busy = true; submit.disabled = true; submit.textContent = "Sending…";
       try { if (window.fbq) window.fbq("track", "Lead", { content_name: "Team enquiry" }); } catch (x) {}
       try {
         fetch(CFG.touchpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, keepalive: true,
-          body: JSON.stringify({ touchpoint_date: new Date().toISOString(), touchpoint_type: "form_lead", event_name: CFG.city, name: contact, email: email, phone: phone, action: "team_enquiry_submit", entry_type: "Team", company: company, seats: seats }) }).catch(function () {});
+          body: JSON.stringify({ touchpoint_date: new Date().toISOString(), touchpoint_type: "form_lead", event_name: CFG.city, name: contact, email: email, phone: phone, action: "team_enquiry_submit", entry_type: "Team", company: company, seats: seats, notes: notes }) }).catch(function () {});
         fetch(CFG.events, { method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true,
           body: JSON.stringify({
             event_type: "team_enquiry", firstName: first, lastName: nn(last), email: email, phone: phone,
@@ -1527,7 +1535,7 @@ fbq('init','747158551764136');fbq('track','PageView');
             utm_content: nn(u.utm_content), utm_term: nn(u.utm_term),
             page_url: location.href, submitted_at: new Date().toISOString(),
             company_name: company, contact_role: nn(role), seats: seats, brand_colour: colour.value,
-            logo_filename: logo ? logo.name : null, logo_data_url: logo ? logo.data : null
+            logo_filename: logo ? logo.name : null, logo_data_url: logo ? logo.data : null, notes: nn(notes)
           }) }).catch(function () {});
         await capped(fetch(CFG.supabase + "/rest/v1/leads", { method: "POST", keepalive: true,
           headers: { "Content-Type": "application/json", apikey: CFG.key, Authorization: "Bearer " + CFG.key, Prefer: "return=minimal" },
@@ -1536,7 +1544,7 @@ fbq('init','747158551764136');fbq('track','PageView');
           body: JSON.stringify({ email: email, name: contact, phone: phone, trakyo_id: tid, form_name: "GT Team Enquiry", city: CFG.city }) }));
         await capped(fetch(CFG.supabase + "/functions/v1/submit-lead", { method: "POST", keepalive: true,
           headers: { "Content-Type": "application/json", apikey: CFG.key, Authorization: "Bearer " + CFG.key },
-          body: JSON.stringify({ form: "team", payload: { firstName: first, lastName: last, email: email, phone: "+" + phone.replace(/[^\d]/g, ""), trakyo_id: tid, submitted_at: new Date().toISOString(), utm_source: u.utm_source, utm_medium: u.utm_medium, utm_campaign: u.utm_campaign, utm_content: u.utm_content, utm_term: u.utm_term, purchase_city: CFG.city, purchase_tier_name: "Team", company_name: company, contact_role: role, seats: seats } } ) }));
+          body: JSON.stringify({ form: "team", payload: { firstName: first, lastName: last, email: email, phone: "+" + phone.replace(/[^\d]/g, ""), trakyo_id: tid, submitted_at: new Date().toISOString(), utm_source: u.utm_source, utm_medium: u.utm_medium, utm_campaign: u.utm_campaign, utm_content: u.utm_content, utm_term: u.utm_term, purchase_city: CFG.city, purchase_tier_name: "Team", company_name: company, contact_role: role, seats: seats, notes: notes } } ) }));
         form.innerHTML = '<div class="tm-done"><h3>Thank you, ' + first.replace(/[<>]/g, "") + '.</h3><p>We\'ll come back to you within 24 hours with seats and pricing for ' + seats + ' at ' + company.replace(/[<>]/g, "") + '.</p></div>';
       } catch (x) {
         busy = false; submit.disabled = false; submit.textContent = "Request team seats";
