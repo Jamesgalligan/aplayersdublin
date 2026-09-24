@@ -317,6 +317,9 @@ fbq('init','747158551764136');fbq('track','PageView');
   .announce-units span:first-child { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 4.4vw, 60px); line-height: .95; letter-spacing: -.02em; color: var(--on-ink); font-variant-numeric: tabular-nums lining-nums; }
   .announce-units .mono { color: var(--on-ink-mute); font-size: 10.5px; }
   .announce-date { color: var(--on-ink-mute); font-size: 10.5px; margin: 0; }
+  .concrete .announce { background: var(--black); }
+  .eb-line { margin: 0; color: #DEDEDA; font-size: 15px; max-width: 34ch; }
+  #tickets .sec-head { align-items: start; }
   @media (max-width: 520px) { .announce { justify-self: stretch; padding: 18px; } .announce-units { gap: 0 14px; } }
 
   /* ---------- team package ---------- */
@@ -870,7 +873,20 @@ fbq('init','747158551764136');fbq('track','PageView');
       <div class="sec-head">
         <p class="eyebrow mono">Reserve your seat</p>
         <h2 id="tickets-title" class="sec-title">Choose your <em>weekend.</em></h2>
-        <p class="sec-lede">Saturday is the way in. VIP adds the gala, and VVIP adds the Exclusive Founders Day.</p>
+        <div class="spk-side">
+          <div class="announce eb" data-eb-target="2026-10-05T17:00:00Z">
+            <p class="mono announce-label"><span class="live-dot" aria-hidden="true"></span>Early bird · pre-announcement pricing</p>
+            <div class="announce-units">
+              <div><span id="eb-d">--</span><span class="mono">Days</span></div>
+              <div><span id="eb-h">--</span><span class="mono">Hrs</span></div>
+              <div><span id="eb-m">--</span><span class="mono">Min</span></div>
+              <div><span id="eb-s">--</span><span class="mono">Sec</span></div>
+            </div>
+            <p class="eb-line">Prices rise when the eight speakers are announced.</p>
+            <p class="mono announce-date">Mon 5 Oct · 18:00 Dublin</p>
+          </div>
+          <p class="sec-lede">Saturday is the way in. VIP adds the gala, and VVIP adds the Exclusive Founders Day.</p>
+        </div>
       </div>
       <div class="tiers">
         <article class="tier">
@@ -907,7 +923,7 @@ fbq('init','747158551764136');fbq('track','PageView');
         </article>
         <article class="tier team-tier"><span class="tier-flag quiet">From 5 seats</span><div class="tier-head"><h3 class="tier-name">Team</h3><span class="tier-days mono">For companies &amp; clients</span></div><div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Co-branded</span></div><ul><li><svg aria-hidden="true"><use href="#check"/></svg>Your seats together in a reserved block</li><li><svg aria-hidden="true"><use href="#check"/></svg>Your logo on co-branded lanyards</li><li><svg aria-hidden="true"><use href="#check"/></svg>Named badges for everyone you bring</li></ul><a class="pill btn btn-grey" href="#tickets" data-team>Enquire for teams</a></article>
       </div>
-      <p class="tiers-note mono">Tiers and pricing confirmed at release</p>
+      <p class="tiers-note mono">Early bird pricing · rises at the speaker announcement</p>
     </div>
   </section>
 
@@ -1581,5 +1597,22 @@ fbq('init','747158551764136');fbq('track','PageView');
   })();
 </script>
 
+<script>
+  (function () {
+    var box = document.querySelector("[data-eb-target]");
+    if (!box) return;
+    var target = Date.parse(box.getAttribute("data-eb-target"));
+    var el = { d: document.getElementById("eb-d"), h: document.getElementById("eb-h"), m: document.getElementById("eb-m"), s: document.getElementById("eb-s") };
+    function pad(v) { return v < 10 ? "0" + v : "" + v; }
+    function tick() {
+      var s = Math.max(0, Math.floor((target - Date.now()) / 1000));
+      el.d.textContent = pad(Math.floor(s / 86400));
+      el.h.textContent = pad(Math.floor(s / 3600) % 24);
+      el.m.textContent = pad(Math.floor(s / 60) % 60);
+      el.s.textContent = pad(s % 60);
+    }
+    tick(); setInterval(tick, 1000);
+  })();
+</script>
 </body>
 </html>
