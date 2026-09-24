@@ -371,7 +371,7 @@ fbq('init','747158551764136');fbq('track','PageView');
   .co-title em { font-style: italic; font-weight: 300; color: var(--pink); }
   .co-form { display: grid; gap: 14px; }
   .co-hp { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); left: -9999px; }
-  .co-tiers { border: 0; margin: 0 0 4px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .co-tiers { border: 0; margin: 0 0 4px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .co-tiers legend { color: var(--on-ink-mute); font-size: 10.5px; margin-bottom: 8px; padding: 0; }
   .co-tier { position: relative; cursor: pointer; }
   .co-tier input { position: absolute; opacity: 0; }
@@ -909,15 +909,15 @@ fbq('init','747158551764136');fbq('track','PageView');
           <a class="pill pill-light btn" href="#tickets" data-checkout="VIP">Get VIP ticket</a>
         </article>
         <article class="tier founder">
-          <span class="tier-flag">Early bird</span>
+          <span class="tier-flag">Application</span>
           <div class="tier-head"><h3 class="tier-name">VVIP Experience</h3><span class="tier-days mono">Fri 18 + Sat 19 + Sun 20</span></div>
-          <div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Early bird · 20 seats</span></div>
+          <div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">By application · 20 seats</span></div>
           <ul>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Everything in VIP</li>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Friday hot seats, workshops and expert roundtables</li>
             <li><svg aria-hidden="true"><use href="#check"/></svg>Founders’ dinner on Friday night</li>
           </ul>
-          <a class="pill btn btn-gold" href="#tickets" data-checkout="VVIP">Get VVIP ticket</a>
+          <a class="pill btn btn-gold" href="#tickets" data-vvip>Request access</a>
         </article>
         <article class="tier team-tier"><span class="tier-flag quiet">From 5 seats</span><div class="tier-head"><h3 class="tier-name">Team</h3><span class="tier-days mono">For companies &amp; clients</span></div><div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Co-branded</span></div><ul><li><svg aria-hidden="true"><use href="#check"/></svg>Your seats together in a reserved block</li><li><svg aria-hidden="true"><use href="#check"/></svg>Your logo on co-branded lanyards</li><li><svg aria-hidden="true"><use href="#check"/></svg>Named badges for everyone you bring</li></ul><a class="pill btn btn-grey" href="#tickets" data-team>Enquire for teams</a></article>
       </div>
@@ -1019,7 +1019,6 @@ fbq('init','747158551764136');fbq('track','PageView');
         <legend class="mono">Choose your ticket</legend>
         <label class="co-tier"><input type="radio" name="tier" id="co-tier-ga" value="GA" checked><span><b>General Admission</b><small>Saturday 19 · Conference &amp; afterparty</small></span></label>
         <label class="co-tier"><input type="radio" name="tier" id="co-tier-vip" value="VIP"><span><b>VIP Experience</b><small>Sat 19 + Sun 20 · Adds the Gala</small></span></label>
-        <label class="co-tier"><input type="radio" name="tier" id="co-tier-vvip" value="VVIP"><span><b>VVIP Experience</b><small>All three days · Founders Day</small></span></label>
       </fieldset>
       <div class="co-row">
         <label class="co-field"><span class="mono">First name</span><input id="co-first" name="firstName" autocomplete="given-name" maxlength="100" required></label>
@@ -1096,6 +1095,31 @@ fbq('init','747158551764136');fbq('track','PageView');
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="co" id="vvip" hidden>
+  <div class="co-scrim" data-vv-close></div>
+  <div class="co-panel" role="dialog" aria-modal="true" aria-labelledby="vv-title">
+    <button class="co-x" type="button" data-vv-close aria-label="Close">&times;</button>
+    <p class="eyebrow mono co-eyebrow">VVIP · 20 seats · Fri 18 – Sun 20 December</p>
+    <h2 id="vv-title" class="co-title">Request <em>access.</em></h2>
+    <form class="co-form" id="vv-form" novalidate>
+      <div class="co-hp" aria-hidden="true"><label for="vv_website">Company website</label><input id="vv_website" name="vv_website" type="text" tabindex="-1" autocomplete="off"></div>
+      <div class="co-row">
+        <label class="co-field"><span class="mono">First name</span><input id="vv-first" name="firstName" autocomplete="given-name" maxlength="100" required></label>
+        <label class="co-field"><span class="mono">Last name</span><input id="vv-last" name="lastName" autocomplete="family-name" maxlength="100" required></label>
+      </div>
+      <label class="co-field"><span class="mono">Email</span><input id="vv-email" name="email" type="email" autocomplete="email" maxlength="255" required></label>
+      <div class="co-field"><label class="mono" for="vv-phone">Phone</label>
+        <div class="co-phone"><select id="vv-dial" name="dial" aria-label="Country code"></select><input id="vv-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="85 123 4567" maxlength="20" required></div>
+      </div>
+      <label class="co-field"><span class="mono">Company</span><input id="vv-company" name="company" autocomplete="organization" maxlength="120"></label>
+      <label class="co-field"><span class="mono">What are you building? (optional)</span><textarea id="vv-notes" name="notes" rows="3" maxlength="1000" placeholder="Your business, revenue range, and what you want from the weekend."></textarea></label>
+      <p class="co-error" id="vv-error" role="alert" hidden></p>
+      <button class="pill pill-light co-submit" id="vv-submit" type="submit">Request access</button>
+      <p class="co-note">Twenty seats. We reply within 24 hours.</p>
+    </form>
   </div>
 </div>
 
@@ -1228,8 +1252,7 @@ fbq('init','747158551764136');fbq('track','PageView');
       city: "Dublin",
       checkout: {
         GA: "https://whop.com/checkout/ch_E77ZaalLi3SL8aA/",
-        VIP: "https://whop.com/checkout/ch_xM3urnTZIY8Yyfd/",
-        VVIP: "https://whop.com/checkout/ch_Xt31mMYhDdbZWlB/"
+        VIP: "https://whop.com/checkout/ch_xM3urnTZIY8Yyfd/"
       },
       supabase: "https://dbxafbczhrdmruhhcitt.supabase.co",
       key: "sb_publishable_d4TwbbBe9R2ZXFx8ObvIUA__36rfOKi",
@@ -1610,6 +1633,91 @@ fbq('init','747158551764136');fbq('track','PageView');
       el.s.textContent = pad(s % 60);
     }
     tick(); setInterval(tick, 1000);
+  })();
+</script>
+<script>
+  (function () {
+    var CFG = {
+      city: "Dublin",
+      supabase: "https://dbxafbczhrdmruhhcitt.supabase.co",
+      key: "sb_publishable_d4TwbbBe9R2ZXFx8ObvIUA__36rfOKi",
+      trakyo: "https://app.trakyo.io/api/platforms/custom-form/0dac5cf5-5a10-4f2a-a932-4699a51677da/webhook",
+      touchpoint: "https://columapc.app.n8n.cloud/webhook/49834c5a-2150-4de1-abad-f50d17e064f2",
+      events: "https://columapc.app.n8n.cloud/webhook/gt-event-capture"
+    };
+    var KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+    var modal = document.getElementById("vvip"), form = document.getElementById("vv-form");
+    if (!modal || !form) return;
+    var err = document.getElementById("vv-error"), submit = document.getElementById("vv-submit");
+    var openedAt = 0, busy = false, lastTrigger = null;
+    var dialFrom = document.getElementById("co-dial");
+    if (dialFrom) document.getElementById("vv-dial").innerHTML = dialFrom.innerHTML;
+
+    function utm() {
+      var a = {}, b = {};
+      try { a = JSON.parse(sessionStorage.getItem("utm_params") || "{}"); } catch (e) {}
+      try { b = JSON.parse(sessionStorage.getItem("apc_utm") || "{}") || {}; } catch (e) {}
+      var o = {}; KEYS.forEach(function (k) { o[k] = a[k] || b[k] || ""; }); return o;
+    }
+    function trakyoId() {
+      try { if (window.trakyo_id) return String(window.trakyo_id).trim(); } catch (e) {}
+      try { var c = ("; " + document.cookie).split("; trakyo_id="); if (c.length === 2) { var v = decodeURIComponent(c.pop().split(";").shift()); if (v) return v.trim(); } } catch (e) {}
+      try { var l = localStorage.getItem("trakyo_id"); if (l) return l.trim(); } catch (e) {}
+      try { return new URLSearchParams(location.search).get("trakyo_id") || ""; } catch (e) { return ""; }
+    }
+    function capped(p, ms) { return Promise.race([p.catch(function () {}), new Promise(function (r) { setTimeout(r, ms || 3000); })]); }
+    function fail(m) { err.textContent = m; err.hidden = false; return false; }
+    function open() { err.hidden = true; modal.hidden = false; document.documentElement.style.overflow = "hidden"; openedAt = Date.now(); setTimeout(function () { document.getElementById("vv-first").focus(); }, 30); }
+    function close() { modal.hidden = true; document.documentElement.style.overflow = ""; if (lastTrigger && lastTrigger.focus) lastTrigger.focus(); }
+    document.addEventListener("click", function (e) {
+      var t = e.target.closest("[data-vvip]");
+      if (t) { e.preventDefault(); lastTrigger = t; open(); return; }
+      if (e.target.closest("[data-vv-close]")) close();
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) close(); });
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (busy) return;
+      err.hidden = true;
+      if (form.vv_website.value.trim() !== "") return;
+      var first = form.firstName.value.trim(), last = form.lastName.value.trim();
+      var email = form.email.value.trim().toLowerCase(), company = form.company.value.trim();
+      var notes = (form.notes.value || "").trim().slice(0, 1000);
+      if (!first) return fail("First name is required.");
+      if (!last) return fail("Last name is required.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail("Please enter a valid email address.");
+      var digits = form.phone.value.replace(/[^\d]/g, "").replace(/^0+/, "");
+      if (digits.length < 7 || digits.length > 14 || /^(\d)\1+$/.test(digits)) return fail("Please enter a valid phone number.");
+      if (Date.now() - openedAt < 3000) return fail("One moment, then press request again.");
+      var phone = document.getElementById("vv-dial").value + digits;
+      var name = (first + " " + last).trim(), tid = trakyoId(), u = utm(), nn = function (v) { return v ? v : null; };
+
+      busy = true; submit.disabled = true; submit.textContent = "Sending…";
+      try { if (window.fbq) window.fbq("track", "Lead", { content_name: "VVIP request" }); } catch (x) {}
+      try {
+        fetch(CFG.touchpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, keepalive: true,
+          body: JSON.stringify({ touchpoint_date: new Date().toISOString(), touchpoint_type: "form_lead", event_name: CFG.city, name: name, email: email, phone: phone, action: "vvip_request_submit", entry_type: "VVIP Experience", company: company, notes: notes }) }).catch(function () {});
+        fetch(CFG.events, { method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true,
+          body: JSON.stringify({ event_type: "vvip_request", firstName: first, lastName: last, email: email, phone: phone,
+            purchase_city: "Dublin", purchase_tier_name: "VVIP Experience", trakyo_id: nn(tid),
+            utm_source: nn(u.utm_source), utm_medium: nn(u.utm_medium), utm_campaign: nn(u.utm_campaign),
+            utm_content: nn(u.utm_content), utm_term: nn(u.utm_term), page_url: location.href,
+            submitted_at: new Date().toISOString(), company_name: nn(company), notes: nn(notes) }) }).catch(function () {});
+        await capped(fetch(CFG.supabase + "/rest/v1/leads", { method: "POST", keepalive: true,
+          headers: { "Content-Type": "application/json", apikey: CFG.key, Authorization: "Bearer " + CFG.key, Prefer: "return=minimal" },
+          body: JSON.stringify({ name: name, email: email, phone: phone }) }), 4000);
+        await capped(fetch(CFG.trakyo, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, name: name, phone: phone, trakyo_id: tid, form_name: "GT VVIP Request", city: CFG.city }) }));
+        await capped(fetch(CFG.supabase + "/functions/v1/submit-lead", { method: "POST", keepalive: true,
+          headers: { "Content-Type": "application/json", apikey: CFG.key, Authorization: "Bearer " + CFG.key },
+          body: JSON.stringify({ form: "vvip", payload: { firstName: first, lastName: last, email: email, phone: "+" + phone.replace(/[^\d]/g, ""), trakyo_id: tid, submitted_at: new Date().toISOString(), utm_source: u.utm_source, utm_medium: u.utm_medium, utm_campaign: u.utm_campaign, utm_content: u.utm_content, utm_term: u.utm_term, purchase_city: CFG.city, purchase_tier_name: "VVIP Experience", company_name: company, notes: notes } }) }));
+        form.innerHTML = '<div class="tm-done"><h3>Thank you, ' + first.replace(/[<>]/g, "") + '.</h3><p>We\'ll come back to you within 24 hours about one of the twenty VVIP seats.</p></div>';
+      } catch (x) {
+        busy = false; submit.disabled = false; submit.textContent = "Request access";
+        fail("Something went wrong. Please try again.");
+      }
+    });
   })();
 </script>
 </body>
