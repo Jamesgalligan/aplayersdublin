@@ -261,7 +261,7 @@ fbq('init','747158551764136');fbq('track','PageView');
   .mosaic .ph:nth-child(8) { grid-column: 4; grid-row: 3; }
 
   /* ---------- tickets ---------- */
-  .tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: stretch; }
+  .tiers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
   .tier { position: relative; background: var(--card); color: var(--on-ink); border-radius: 26px; padding: clamp(24px, 2.6vw, 32px); display: grid; grid-template-rows: auto auto 1fr auto; gap: 18px; box-shadow: 0 40px 70px -40px rgba(0,0,0,.9), inset 0 0 0 1px rgba(255,255,255,.07); }
   .tier-flag { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; background: var(--pink); color: var(--black); padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
   .tier-head { display: grid; gap: 6px; }
@@ -318,6 +318,39 @@ fbq('init','747158551764136');fbq('track','PageView');
   .announce-units .mono { color: var(--on-ink-mute); font-size: 10.5px; }
   .announce-date { color: var(--on-ink-mute); font-size: 10.5px; margin: 0; }
   @media (max-width: 520px) { .announce { justify-self: stretch; padding: 18px; } .announce-units { gap: 0 14px; } }
+
+  /* ---------- team package ---------- */
+  .team-tier .tier-flag.quiet { background: transparent; color: var(--pink); box-shadow: inset 0 0 0 1px rgba(231,185,192,.5); }
+  #team .co-panel { width: min(100%, 740px); }
+  .tm-grid { display: grid; grid-template-columns: minmax(0, 1fr) 224px; gap: 24px; align-items: start; }
+  .tm-preview { display: grid; gap: 16px; justify-items: center; position: sticky; top: 0; }
+  .lan-strap { width: 70px; height: 16px; border-radius: 0 0 7px 7px; background: var(--bc, #E7B9C0); }
+  .lan { width: 210px; border-radius: 16px; overflow: hidden; background: #FFFFFF; color: #0B0B0B; box-shadow: 0 24px 40px -22px rgba(0,0,0,.85); margin-top: -4px; }
+  .lan-top { display: grid; grid-template-columns: 1fr 1fr; height: 76px; }
+  .lan-a { background: #000000; display: grid; place-items: center; }
+  .lan-a svg { width: 46%; height: auto; display: block; }
+  .lan-b { background: var(--bc, #E7B9C0); display: grid; place-items: center; padding: 10px; }
+  .lan-b img { max-width: 100%; max-height: 54px; object-fit: contain; display: block; }
+  .lan-b span { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(11,11,11,.55); text-align: center; }
+  .lan-body { padding: 14px 12px 12px; display: grid; gap: 4px; text-align: center; }
+  .lan-name { font-weight: 800; font-size: 16px; letter-spacing: -.01em; line-height: 1.15; }
+  .lan-role, .lan-co { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+  .lan-role { color: #5A5A57; }
+  .lan-co { color: #0B0B0B; }
+  .lan-foot { background: #0B0B0B; color: #F2F2EF; font-family: var(--mono); font-size: 7.5px; letter-spacing: .12em; text-transform: uppercase; padding: 8px 6px; text-align: center; }
+  .tm-seats { display: grid; gap: 8px; justify-items: center; width: 100%; }
+  .tm-seats svg { width: 100%; max-width: 210px; height: auto; display: block; }
+  .tm-cap { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--on-ink-mute); text-align: center; }
+  .tm-drop { display: grid; gap: 4px; place-items: center; padding: 16px 12px; border-radius: 14px; border: 1px dashed rgba(242,242,239,.3); background: var(--black); color: var(--on-ink-mute); font-size: 13px; text-align: center; cursor: pointer; }
+  .tm-drop:hover, .tm-drop.is-over { border-color: var(--pink); color: var(--on-ink); }
+  .tm-drop b { color: var(--on-ink); font-size: 13.5px; }
+  .tm-drop small { font-size: 11px; }
+  .tm-colour { display: flex; align-items: center; gap: 12px; }
+  .tm-colour input[type="color"] { width: 44px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: none; cursor: pointer; }
+  .tm-done { display: grid; gap: 12px; text-align: center; padding: 10px 0 4px; }
+  .tm-done h3 { font-family: var(--serif); font-weight: 400; font-size: 30px; }
+  .tm-done p { color: var(--on-ink-mute); font-size: 15px; }
+  @media (max-width: 620px) { .tm-grid { grid-template-columns: minmax(0, 1fr); } .tm-preview { position: static; } }
 
   /* ---------- checkout capture ---------- */
   .co { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px; }
@@ -415,7 +448,7 @@ fbq('init','747158551764136');fbq('track','PageView');
   @media (max-width: 1080px) {
     .day { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); }
     .day .times-col { grid-column: 2; }
-    .tiers { grid-template-columns: minmax(0, 1fr); max-width: 560px; margin-inline: auto; gap: 28px; }
+    .tiers { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 820px; margin-inline: auto; gap: 26px 18px; }
   }
   @media (max-width: 900px) {
     .hero-grid { grid-template-columns: minmax(0, 1fr); }
@@ -861,6 +894,7 @@ fbq('init','747158551764136');fbq('track','PageView');
           </ul>
           <a class="pill btn btn-gold" href="https://aplayerswaitlist.com/" target="_blank" rel="noopener">Request access</a>
         </article>
+        <article class="tier team-tier"><span class="tier-flag quiet">From 5 seats</span><div class="tier-head"><h3 class="tier-name">Team</h3><span class="tier-days mono">For companies &amp; clients</span></div><div class="tier-meter"><div class="meter"><i style="width:18%"></i></div><span class="mono">Co-branded</span></div><ul><li><svg aria-hidden="true"><use href="#check"/></svg>Your seats together in a reserved block</li><li><svg aria-hidden="true"><use href="#check"/></svg>Your logo on co-branded lanyards</li><li><svg aria-hidden="true"><use href="#check"/></svg>Named badges for everyone you bring</li></ul><a class="pill btn btn-grey" href="#tickets" data-team>Enquire for teams</a></article>
       </div>
       <p class="tiers-note mono">Tiers and pricing confirmed at release</p>
     </div>
@@ -973,6 +1007,60 @@ fbq('init','747158551764136');fbq('track','PageView');
       <button class="pill pill-light co-submit" id="co-submit" type="submit">Continue to checkout</button>
       <p class="co-note">Secure checkout on Whop. No spam, unsubscribe anytime.</p>
     </form>
+  </div>
+</div>
+
+<div class="co" id="team" hidden>
+  <div class="co-scrim" data-tm-close></div>
+  <div class="co-panel" role="dialog" aria-modal="true" aria-labelledby="tm-title">
+    <button class="co-x" type="button" data-tm-close aria-label="Close">&times;</button>
+    <p class="eyebrow mono co-eyebrow">Dublin · 18–20 December 2026</p>
+    <h2 id="tm-title" class="co-title">Bring your <em>team.</em></h2>
+    <div class="tm-grid">
+      <form class="co-form" id="tm-form" novalidate>
+        <div class="co-hp" aria-hidden="true"><label for="tm_website">Company website</label><input id="tm_website" name="tm_website" type="text" tabindex="-1" autocomplete="off"></div>
+        <label class="co-field"><span class="mono">Company</span><input id="tm-company" name="company" autocomplete="organization" maxlength="120" required></label>
+        <div class="co-row">
+          <label class="co-field"><span class="mono">Your name</span><input id="tm-name" name="contactName" autocomplete="name" maxlength="120" required></label>
+          <label class="co-field"><span class="mono">Your role</span><input id="tm-role" name="role" autocomplete="organization-title" maxlength="80" placeholder="Founder"></label>
+        </div>
+        <div class="co-row">
+          <label class="co-field"><span class="mono">Email</span><input id="tm-email" name="email" type="email" autocomplete="email" maxlength="255" required></label>
+          <label class="co-field"><span class="mono">Seats</span><input id="tm-seats" name="seats" type="number" min="5" max="500" step="1" value="5" required></label>
+        </div>
+        <div class="co-field"><label class="mono" for="tm-phone">Phone</label>
+          <div class="co-phone"><select id="tm-dial" name="dial" aria-label="Country code"></select><input id="tm-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="85 123 4567" maxlength="20" required></div>
+        </div>
+        <div class="co-field">
+          <span class="mono">Company logo</span>
+          <label class="tm-drop" id="tm-drop" for="tm-logo"><b>Upload your logo</b><small>PNG, JPG or SVG · drag and drop</small></label>
+          <input id="tm-logo" name="logo" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
+        </div>
+        <div class="tm-colour"><label class="mono" for="tm-colour">Brand colour</label><input id="tm-colour" type="color" value="#E7B9C0"></div>
+        <p class="co-error" id="tm-error" role="alert" hidden></p>
+        <button class="pill pill-light co-submit" id="tm-submit" type="submit">Request team seats</button>
+        <p class="co-note">We reply within 24 hours with seats and pricing.</p>
+      </form>
+      <div class="tm-preview" aria-hidden="true">
+        <div class="lan-strap"></div>
+        <div class="lan">
+          <div class="lan-top">
+            <div class="lan-a"><svg viewBox="0 0 1000 800" aria-hidden="true"><path fill="#FFFFFF" d="M0 800A1000 1000 0 0 1 400 0H600A1000 1000 0 0 1 1000 800H740A480 480 0 0 0 500 384.31A480 480 0 0 0 260 800Z"/></svg></div>
+            <div class="lan-b" id="tm-logo-slot"><span>Your logo</span></div>
+          </div>
+          <div class="lan-body">
+            <span class="lan-name" id="tm-pv-name">Your name</span>
+            <span class="lan-role" id="tm-pv-role">Founder</span>
+            <span class="lan-co" id="tm-pv-co">Your company</span>
+          </div>
+          <div class="lan-foot">A Players Dublin · 18–20 Dec 2026</div>
+        </div>
+        <div class="tm-seats">
+          <svg id="tm-seatmap" viewBox="0 0 200 120" role="img" aria-label="Seating plan with your block highlighted"></svg>
+          <span class="tm-cap" id="tm-seat-cap">5 seats together</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1260,6 +1348,202 @@ fbq('init','747158551764136');fbq('track','PageView');
         busy = false; submit.disabled = false; submit.textContent = "Continue to checkout";
       }
     });
+  })();
+</script>
+
+<script>
+  (function () {
+    var CFG = {
+      city: "Dublin",
+      supabase: "https://dbxafbczhrdmruhhcitt.supabase.co",
+      key: "sb_publishable_d4TwbbBe9R2ZXFx8ObvIUA__36rfOKi",
+      trakyo: "https://app.trakyo.io/api/platforms/custom-form/0dac5cf5-5a10-4f2a-a932-4699a51677da/webhook",
+      touchpoint: "https://columapc.app.n8n.cloud/webhook/49834c5a-2150-4de1-abad-f50d17e064f2",
+      events: "https://columapc.app.n8n.cloud/webhook/gt-event-capture"
+    };
+    var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+    var modal = document.getElementById("team"), form = document.getElementById("tm-form");
+    if (!modal || !form) return;
+    var err = document.getElementById("tm-error"), submit = document.getElementById("tm-submit");
+    var slot = document.getElementById("tm-logo-slot"), colour = document.getElementById("tm-colour");
+    var drop = document.getElementById("tm-drop"), fileInput = document.getElementById("tm-logo");
+    var pvName = document.getElementById("tm-pv-name"), pvRole = document.getElementById("tm-pv-role"), pvCo = document.getElementById("tm-pv-co");
+    var seatMap = document.getElementById("tm-seatmap"), seatCap = document.getElementById("tm-seat-cap");
+    var logo = null, openedAt = 0, busy = false, lastTrigger = null;
+
+    // country codes: same list as the checkout form
+    var dialFrom = document.getElementById("co-dial");
+    if (dialFrom) document.getElementById("tm-dial").innerHTML = dialFrom.innerHTML;
+
+    function utm() {
+      var a = {}, b = {};
+      try { a = JSON.parse(sessionStorage.getItem("utm_params") || "{}"); } catch (e) {}
+      try { b = JSON.parse(sessionStorage.getItem("apc_utm") || "{}") || {}; } catch (e) {}
+      var o = {}; UTM_KEYS.forEach(function (k) { o[k] = a[k] || b[k] || ""; }); return o;
+    }
+    function trakyoId() {
+      try { if (window.trakyo_id) return String(window.trakyo_id).trim(); } catch (e) {}
+      try { var c = ("; " + document.cookie).split("; trakyo_id="); if (c.length === 2) { var v = decodeURIComponent(c.pop().split(";").shift()); if (v) return v.trim(); } } catch (e) {}
+      try { var l = localStorage.getItem("trakyo_id"); if (l) return l.trim(); } catch (e) {}
+      try { return new URLSearchParams(location.search).get("trakyo_id") || ""; } catch (e) { return ""; }
+    }
+    function capped(p, ms) { return Promise.race([p.catch(function () {}), new Promise(function (r) { setTimeout(r, ms || 3000); })]); }
+
+    // ---- previews ----
+    function drawSeats() {
+      var n = Math.max(5, Math.min(500, parseInt(document.getElementById("tm-seats").value, 10) || 5));
+      var per = 10, rows = 5, cols = 10, c = colour.value, out = "";
+      for (var r = 0; r < rows; r++) {
+        for (var i = 0; i < cols; i++) {
+          var idx = r * cols + i, mine = idx < Math.min(n, rows * cols);
+          out += '<rect x="' + (6 + i * 19) + '" y="' + (26 + r * 18) + '" width="14" height="12" rx="3" fill="' + (mine ? c : "#26262499") + '"/>';
+        }
+      }
+      out = '<rect x="46" y="6" width="108" height="10" rx="3" fill="#3B3B39"/><text x="100" y="15" text-anchor="middle" font-family="ui-monospace, monospace" font-size="6" fill="#9C9C97">STAGE</text>' + out;
+      seatMap.innerHTML = out;
+      var full = Math.floor(Math.min(n, 50) / per);
+      seatCap.textContent = n + " seats together" + (full >= 1 ? " · " + full + (full > 1 ? " rows" : " row") + " reserved" : "");
+    }
+    function refresh() {
+      var nm = form.contactName.value.trim(), ro = form.role.value.trim(), co = form.company.value.trim();
+      pvName.textContent = nm || "Your name";
+      pvRole.textContent = ro || "Founder";
+      pvCo.textContent = co || "Your company";
+      document.querySelector(".tm-preview").style.setProperty("--bc", colour.value);
+      drawSeats();
+    }
+    form.addEventListener("input", refresh);
+    colour.addEventListener("input", refresh);
+
+    // ---- logo ----
+    function dominantColour(img) {
+      try {
+        var c = document.createElement("canvas"), n = 48;
+        c.width = c.height = n;
+        var x = c.getContext("2d");
+        x.drawImage(img, 0, 0, n, n);
+        var d = x.getImageData(0, 0, n, n).data, counts = {}, best = null, bestN = 0;
+        for (var i = 0; i < d.length; i += 4) {
+          var r = d[i], g = d[i + 1], b = d[i + 2], a = d[i + 3];
+          if (a < 200) continue;
+          if (r > 238 && g > 238 && b > 238) continue;
+          if (r < 26 && g < 26 && b < 26) continue;
+          var mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+          if (mx - mn < 28) continue;            // skip greys: a grey logo keeps the default colour
+          var k = (r >> 4) + "," + (g >> 4) + "," + (b >> 4);
+          counts[k] = (counts[k] || 0) + 1;
+          if (counts[k] > bestN) { bestN = counts[k]; best = [r, g, b]; }
+        }
+        if (!best) return null;
+        return "#" + best.map(function (v) { return ("0" + v.toString(16)).slice(-2); }).join("");
+      } catch (e) { return null; }
+    }
+    function shrink(img, type) {
+      try {
+        var max = 480, w = img.naturalWidth || 480, h = img.naturalHeight || 480;
+        var sc = Math.min(1, max / Math.max(w, h));
+        var c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(w * sc)); c.height = Math.max(1, Math.round(h * sc));
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        return c.toDataURL("image/png");
+      } catch (e) { return null; }
+    }
+    function useFile(file) {
+      if (!file) return;
+      if (!/^image\/(png|jpeg|svg\+xml|webp)$/.test(file.type)) return fail("Please upload a PNG, JPG or SVG.");
+      if (file.size > 4 * 1024 * 1024) return fail("That logo is over 4MB. Please upload a smaller file.");
+      err.hidden = true;
+      var reader = new FileReader();
+      reader.onload = function () {
+        var src = reader.result, img = new Image();
+        img.onload = function () {
+          var isSvg = file.type === "image/svg+xml";
+          var data = isSvg ? src : (shrink(img, file.type) || src);
+          logo = { name: file.name, type: file.type, data: data };
+          slot.innerHTML = '<img alt="">';
+          slot.querySelector("img").src = src;
+          drop.innerHTML = "<b>" + file.name.slice(0, 40) + "</b><small>Click to replace</small>";
+          if (!isSvg) { var dom = dominantColour(img); if (dom) { colour.value = dom; } }
+          refresh();
+        };
+        img.onerror = function () { fail("That image could not be read. Try a PNG or JPG."); };
+        img.src = src;
+      };
+      reader.readAsDataURL(file);
+    }
+    fileInput.addEventListener("change", function () { useFile(fileInput.files[0]); });
+    ["dragenter", "dragover"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("is-over"); }); });
+    ["dragleave", "drop"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("is-over"); }); });
+    drop.addEventListener("drop", function (e) { if (e.dataTransfer && e.dataTransfer.files[0]) useFile(e.dataTransfer.files[0]); });
+
+    // ---- open / close ----
+    function open() { err.hidden = true; modal.hidden = false; document.documentElement.style.overflow = "hidden"; openedAt = Date.now(); refresh(); setTimeout(function () { document.getElementById("tm-company").focus(); }, 30); }
+    function close() { modal.hidden = true; document.documentElement.style.overflow = ""; if (lastTrigger && lastTrigger.focus) lastTrigger.focus(); }
+    document.addEventListener("click", function (e) {
+      var t = e.target.closest("[data-team]");
+      if (t) { e.preventDefault(); lastTrigger = t; open(); return; }
+      if (e.target.closest("[data-tm-close]")) close();
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) close(); });
+
+    function fail(msg) { err.textContent = msg; err.hidden = false; return false; }
+    function phoneProblem(raw) {
+      var d = (raw || "").replace(/[^\d]/g, "").replace(/^0+/, "");
+      if (!d) return "Phone number is required.";
+      if (d.length < 7 || d.length > 14) return "Please enter a valid phone number.";
+      if (/^(\d)\1+$/.test(d)) return "Please enter a real phone number.";
+      return null;
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (busy) return;
+      err.hidden = true;
+      if (form.tm_website.value.trim() !== "") return;
+      var company = form.company.value.trim(), contact = form.contactName.value.trim();
+      var role = form.role.value.trim(), email = form.email.value.trim().toLowerCase();
+      var seats = Math.max(5, parseInt(form.seats.value, 10) || 0);
+      if (!company) return fail("Company name is required.");
+      if (!contact) return fail("Your name is required.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail("Please enter a valid email address.");
+      if (seats < 5) return fail("Team seats start at 5.");
+      var p = phoneProblem(form.phone.value);
+      if (p) return fail(p);
+      if (Date.now() - openedAt < 3000) return fail("One moment, then press request again.");
+      var phone = form.tm_dial ? "" : document.getElementById("tm-dial").value + form.phone.value.replace(/[^\d]/g, "").replace(/^0+/, "");
+      var parts = contact.split(/\s+/), first = parts.shift() || contact, last = parts.join(" ");
+      var tid = trakyoId(), u = utm(), nn = function (v) { return v ? v : null; };
+
+      busy = true; submit.disabled = true; submit.textContent = "Sending…";
+      try { if (window.fbq) window.fbq("track", "Lead", { content_name: "Team enquiry" }); } catch (x) {}
+      try {
+        fetch(CFG.touchpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, keepalive: true,
+          body: JSON.stringify({ touchpoint_date: new Date().toISOString(), touchpoint_type: "form_lead", event_name: CFG.city, name: contact, email: email, phone: phone, action: "team_enquiry_submit", entry_type: "Team", company: company, seats: seats }) }).catch(function () {});
+        fetch(CFG.events, { method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true,
+          body: JSON.stringify({
+            event_type: "team_enquiry", firstName: first, lastName: nn(last), email: email, phone: phone,
+            purchase_city: "Dublin", purchase_tier_name: "Team", trakyo_id: nn(tid),
+            utm_source: nn(u.utm_source), utm_medium: nn(u.utm_medium), utm_campaign: nn(u.utm_campaign),
+            utm_content: nn(u.utm_content), utm_term: nn(u.utm_term),
+            page_url: location.href, submitted_at: new Date().toISOString(),
+            company_name: company, contact_role: nn(role), seats: seats, brand_colour: colour.value,
+            logo_filename: logo ? logo.name : null, logo_data_url: logo ? logo.data : null
+          }) }).catch(function () {});
+        await capped(fetch(CFG.supabase + "/rest/v1/leads", { method: "POST", keepalive: true,
+          headers: { "Content-Type": "application/json", apikey: CFG.key, Authorization: "Bearer " + CFG.key, Prefer: "return=minimal" },
+          body: JSON.stringify({ name: contact, email: email, phone: phone }) }), 4000);
+        await capped(fetch(CFG.trakyo, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, name: contact, phone: phone, trakyo_id: tid, form_name: "GT Team Enquiry", city: CFG.city }) }));
+        await capped(fetch(CFG.supabase + "/functions/v1/submit-lead", { method: "POST", keepalive: true,
+          headers: { "Content-Type": "application/json", apikey: CFG.key, Authorization: "Bearer " + CFG.key },
+          body: JSON.stringify({ form: "team", payload: { firstName: first, lastName: last, email: email, phone: "+" + phone.replace(/[^\d]/g, ""), trakyo_id: tid, submitted_at: new Date().toISOString(), utm_source: u.utm_source, utm_medium: u.utm_medium, utm_campaign: u.utm_campaign, utm_content: u.utm_content, utm_term: u.utm_term, purchase_city: CFG.city, purchase_tier_name: "Team", company_name: company, contact_role: role, seats: seats } } ) }));
+        form.innerHTML = '<div class="tm-done"><h3>Thank you, ' + first.replace(/[<>]/g, "") + '.</h3><p>We\'ll come back to you within 24 hours with seats and pricing for ' + seats + ' at ' + company.replace(/[<>]/g, "") + '.</p></div>';
+      } catch (x) {
+        busy = false; submit.disabled = false; submit.textContent = "Request team seats";
+        fail("Something went wrong. Please try again.");
+      }
+    });
+    refresh();
   })();
 </script>
 
