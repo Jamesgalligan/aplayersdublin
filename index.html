@@ -1390,6 +1390,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         GA: "https://whop.com/checkout/plan_ORxdRhXdHSEEN",
         VIP: "https://whop.com/checkout/plan_fxlqGLFqJy3Jj"
       },
+      // The worker opens a Whop checkout that carries the attribution and
+      // returns to /thanks. Empty until it is deployed, and the plan links
+      // above stay the fallback so a tracking outage never stops a sale.
+      worker: "",
       supabase: "https://dbxafbczhrdmruhhcitt.supabase.co",
       key: "sb_publishable_d4TwbbBe9R2ZXFx8ObvIUA__36rfOKi",
       trakyo: "https://app.trakyo.io/api/platforms/custom-form/0dac5cf5-5a10-4f2a-a932-4699a51677da/webhook",
@@ -1478,6 +1482,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) close(); });
     window.addEventListener("pageshow", function (ev) { if (ev.persisted) { busy = false; submit.disabled = false; submit.textContent = "Continue to checkout"; } });
 
+    function cookie(name) {
+      try {
+        var parts = ("; " + document.cookie).split("; " + name + "=");
+        return parts.length === 2 ? parts.pop().split(";").shift() : "";
+      } catch (e) { return ""; }
+    }
+
+    /* Asks the worker for a checkout that carries event_uid and the
+       attribution. Returns null on any trouble, and the caller then uses
+       the plan link: the buyer is never held up by our tracking. */
+    async function openCheckout(tier, d) {
+      if (!CFG.worker) return null;
+      try {
+        var r = await capped(fetch(CFG.worker + "/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tier: tier, email: d.email, phone: d.phone, first_name: d.first, last_name: d.last,
+            utm_source: d.u.utm_source, utm_medium: d.u.utm_medium, utm_campaign: d.u.utm_campaign,
+            utm_content: d.u.utm_content, utm_term: d.u.utm_term, fbclid: d.u.fbclid,
+            trakyo_id: d.tid, fbp: cookie("_fbp"), fbc: cookie("_fbc"), page_url: location.href
+          })
+        }), 6000);
+        if (!r || !r.ok) { console.warn("[checkout] worker said " + (r && r.status) + "; using the plan link"); return null; }
+        var j = await r.json();
+        return j && j.url ? j : null;
+      } catch (e) {
+        console.warn("[checkout] worker unreachable; using the plan link", e && e.message);
+        return null;
+      }
+    }
+
     function fail(msg) { err.textContent = msg; err.hidden = false; }
 
     form.addEventListener("submit", async function (e) {
@@ -1535,9 +1571,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         // A ticket button carrying its own checkout link wins; otherwise the
         // tier's link from CFG above. Neither is rewritten beyond the tags.
         var own = (lastTrigger && lastTrigger.getAttribute("href")) || "";
-        var dest = /^https?:/i.test(own) ? own : (CFG.checkout[tier] || CFG.checkout.GA);
+        var fallback = /^https?:/i.test(own) ? own : (CFG.checkout[tier] || CFG.checkout.GA);
+        fallback += qsOut ? (fallback.indexOf("?") > -1 ? "&" : "?") + qsOut : "";
+
+        var session = await openCheckout(tier, { email: email, phone: phone, first: first, last: last, u: u, tid: tid });
+        GTDL.push("event_checkout_view", {
+          tier: tier,
+          value: session && session.value,
+          currency: session && session.currency,
+          event_uid: session && session.event_uid,
+          email: email, phone: phone, first_name: first, last_name: last
+        });
         GTLead.done();
-        location.href = dest + (qsOut ? (dest.indexOf("?") > -1 ? "&" : "?") + qsOut : "");
+        location.href = (session && session.url) || fallback;
       } catch (x) {
         fail("Something went wrong. Please try again.");
         busy = false; submit.disabled = false; submit.textContent = "Continue to checkout";
