@@ -6,6 +6,56 @@
 <title>A Players Dublin · December 18–20, 2026</title>
 <meta name="description" content="A Players Global Tour, Dublin. An exclusive founders day on Friday, the main stage on Saturday, and the black-tie gala on Sunday. December 18–20, 2026.">
 <meta name="theme-color" content="#111311">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WL5TT2WF');</script>
+<!-- End Google Tag Manager -->
+<script>
+  /* Every browser tag lives in GTM-WL5TT2WF. This file only pushes named
+     events onto window.dataLayer; it never calls a vendor directly. */
+  window.dataLayer = window.dataLayer || [];
+  window.GTDL = (function () {
+    var CITY = "dublin";
+    var ID = "343bdc46-d940-4ce1-9dfb-e7068a5d6aea";
+    var seen = {};
+    function first(key) {
+      if (seen[key]) return false;
+      seen[key] = true;
+      try {
+        if (localStorage.getItem("gt_dl_" + key)) return false;
+        localStorage.setItem("gt_dl_" + key, String(Date.now()));
+      } catch (e) {}
+      return true;
+    }
+    function push(name, fields) {
+      var out = { event: name, event_city: CITY, event_id: ID };
+      Object.keys(fields || {}).forEach(function (k) {
+        var v = fields[k];
+        if (v !== undefined && v !== null && v !== "") out[k] = v;
+      });
+      window.dataLayer.push(out);
+      try { console.log("[dataLayer] " + name, JSON.stringify(out)); } catch (e) {}
+      return out;
+    }
+    /* once per visitor, for the steps that are a milestone rather than an action */
+    function once(name, fields) { return first(name) ? push(name, fields) : null; }
+    /* once per key, for purchases: a refresh must not count twice */
+    function onceFor(key, name, fields) { return first(name + ":" + key) ? push(name, fields) : null; }
+    return { push: push, once: once, onceFor: onceFor, city: CITY, id: ID };
+  })();
+  document.addEventListener("DOMContentLoaded", function () {
+    ["co-form", "tm-form", "vv-form"].forEach(function (id) {
+      var f = document.getElementById(id);
+      if (!f) return;
+      var fire = function () { GTDL.once("event_form_start"); };
+      f.addEventListener("focusin", fire);
+      f.addEventListener("input", fire);
+    });
+  });
+</script>
 <meta property="og:title" content="A Players Dublin · December 18–20, 2026">
 <meta property="og:description" content="Where Europe’s entrepreneurs spend the last weekend of the year. Business by day, black tie by night.">
 <meta property="og:type" content="website">
@@ -519,6 +569,10 @@
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL5TT2WF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <div class="grain" aria-hidden="true"></div>
 
@@ -1123,12 +1177,11 @@
 
      Nothing here knows a checkout URL; those stay in the CFG blocks.
 
-     Deliberately no Meta or GA events. Marbella fires a value-less fbq
-     Lead and an InitiateCheckout with value 0 into pixel 747158551764136
-     at this exact point, which is the pattern that collapsed our value
-     coverage on 25 September. Once Dublin has a pixel of its own, add the
-     snippet and give GTLead.pixel an id and the tier price: the same two
-     event names then go out carrying a real value instead of zero.
+     No Meta call lives in site code. GTM-WL5TT2WF owns every browser tag;
+     this file only pushes named events onto window.dataLayer. A Meta Lead
+     event is never fired - a value-less Lead is what collapsed our value
+     coverage on 25 September - and Purchase value comes from the server,
+     off the Whop webhook, not from here.
      --------------------------------------------------------------------- */
   window.GTLead = (function () {
     var EVENTS = "https://columapc.app.n8n.cloud/webhook/gt-event-capture";
@@ -1136,7 +1189,6 @@
     var QUEUE = "gt_popup_queue";
     var CITY = "Dublin";
     var WAIT = 4000;
-    var pixel = { id: "", currency: "EUR", price: {} };
 
     /* Throwaway inboxes and the misspellings we see most often. */
     var BURNER = ("test.com test.co example.com example.org example.net mailinator.com guerrillamail.com " +
@@ -1279,15 +1331,6 @@
       }).then(function (r) { return r.ok; });
     }
 
-    function track(name, body) {
-      if (!pixel.id || !window.fbq) return;
-      var params = { content_name: body.ticket_type, content_type: "product", currency: pixel.currency };
-      var v = pixel.price[body.ticket_type];
-      if (v) params.value = v;
-      try { window.fbq("track", name, params); } catch (e) {}
-      try { if (window.gtag) window.gtag("event", name === "Lead" ? "generate_lead" : "begin_checkout", { tier: body.ticket_type }); } catch (e) {}
-    }
-
     /* Set while a post is in the air, so a tab closed mid-submit still
        sends the lead by beacon. Cleared by the caller's redirect. */
     var inFlight = null;
@@ -1305,8 +1348,6 @@
       var body = build(d), id = hold(body);
       inFlight = body;
       console.log("[popup] POST " + EVENTS + "\n" + JSON.stringify(body, null, 2));
-      track("Lead", body);
-      track("InitiateCheckout", body);
       var sent = post(body).then(function (ok) {
         if (ok) { release(id); inFlight = null; }
         else console.warn("[popup] webhook refused the post; queued for one retry");
@@ -1335,7 +1376,7 @@
     return {
       popup: popup, done: done, build: build, emailProblem: emailProblem,
       phoneProblem: phoneProblem, e164: e164, loadPhoneLib: loadPhoneLib,
-      utm: utm, trakyoId: trakyoId, pixel: pixel, wait: WAIT
+      utm: utm, trakyoId: trakyoId, wait: WAIT
     };
   })();
 
@@ -1355,7 +1396,7 @@
       touchpoint: "https://columapc.app.n8n.cloud/webhook/49834c5a-2150-4de1-abad-f50d17e064f2",
       events: "https://columapc.app.n8n.cloud/webhook/gt-event-capture"
     };
-    var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+    var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid"];
     var TIERS = { GA: "General Admission", VIP: "VIP Experience", VVIP: "VVIP Experience" };
 
     // keep campaign tags for the session, like the London site
@@ -1456,6 +1497,7 @@
       if (Date.now() - openedAt < 3000) return fail("One moment, then press continue again.");
       var phone = dial + form.phone.value.replace(/[^\d]/g, "").replace(/^0+/, "");
       var name = (first + " " + last).trim(), tid = trakyoId(), u = utm();
+      GTDL.once("event_lead_capture", { email: email, phone: phone, first_name: first, last_name: last });
       busy = true; submit.disabled = true;
       fireEvent("reserve", { firstName: first, lastName: last, email: email, phone: phone, tierName: tierName });
 
@@ -1515,7 +1557,7 @@
       touchpoint: "https://columapc.app.n8n.cloud/webhook/49834c5a-2150-4de1-abad-f50d17e064f2",
       events: "https://columapc.app.n8n.cloud/webhook/gt-event-capture"
     };
-    var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+    var UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid"];
     var modal = document.getElementById("team"), form = document.getElementById("tm-form");
     if (!modal || !form) return;
     var err = document.getElementById("tm-error"), submit = document.getElementById("tm-submit");
@@ -1673,6 +1715,7 @@
       var parts = contact.split(/\s+/), first = parts.shift() || contact, last = parts.join(" ");
       var notes = (form.notes.value || "").trim().slice(0, 1000);
       var teamTier = form.teamTier.value;
+      GTDL.once("event_lead_capture", { email: email, phone: phone, first_name: first, last_name: last });
       var tid = trakyoId(), u = utm(), nn = function (v) { return v ? v : null; };
 
       busy = true; submit.disabled = true; submit.textContent = "Sending…";
@@ -1718,7 +1761,7 @@
       touchpoint: "https://columapc.app.n8n.cloud/webhook/49834c5a-2150-4de1-abad-f50d17e064f2",
       events: "https://columapc.app.n8n.cloud/webhook/gt-event-capture"
     };
-    var KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+    var KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid"];
     var modal = document.getElementById("vvip"), form = document.getElementById("vv-form");
     if (!modal || !form) return;
     var err = document.getElementById("vv-error"), submit = document.getElementById("vv-submit");
@@ -1768,6 +1811,7 @@
       if (!revenue) return fail("Please pick your monthly revenue range.");
       if (Date.now() - openedAt < 3000) return fail("One moment, then press request again.");
       var phone = GTLead.e164(dial, form.phone.value);
+      GTDL.once("event_lead_capture", { email: email, phone: phone, first_name: first, last_name: last });
       var name = (first + " " + last).trim(), tid = trakyoId(), u = utm(), nn = function (v) { return v ? v : null; };
 
       busy = true; submit.disabled = true; submit.textContent = "Sending…";
