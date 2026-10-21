@@ -257,8 +257,8 @@
 
   /* ---------- gallery + tour ---------- */
   .gallery { padding-block: 24px 48px; }
-  .gal { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 26px; }
-  .gal div { aspect-ratio: 9 / 16; overflow: hidden; background: var(--card); }
+  .gal { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 26px; }
+  .gal div { aspect-ratio: 3 / 4; overflow: hidden; background: var(--card); }
   .gal div { position: relative; }
   .tour { padding-block: 72px 72px; }
   .tour .h-sans { margin-top: 0; }
@@ -320,7 +320,7 @@
     .vvip .ticks { grid-template-columns: minmax(0, 1fr); }
     .letters, .faq-grid { grid-template-columns: minmax(0, 1fr); }
     .loc { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .gal { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .gal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 640px) {
     .chap { grid-template-columns: minmax(0, 1fr); gap: 24px; }
