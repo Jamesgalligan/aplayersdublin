@@ -356,6 +356,12 @@
   .spk-grid .spk { width: auto; }
   .spk-grid .ph { aspect-ratio: 1 / 1; }
   .spk-grid .ph svg { fill: rgba(212,188,142,.26); }
+  /* While every name is still unannounced the cards carry nothing, so they
+     shrink to one compact row instead of owning a screenful of scroll. */
+  .spk-grid.pending { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px; margin-top: 26px; }
+  .spk-grid.pending .ph { border-radius: 8px; margin-bottom: 0; }
+  .spk-grid.pending h3, .spk-grid.pending .area { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .spk-pending-note { margin-top: 14px; text-align: center; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(140,140,136,.75); }
   .spk-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); }
   .spk-foot p { max-width: 58ch; font-size: 13px; color: var(--mute); }
   .hosts { margin-top: 34px; }
@@ -368,6 +374,8 @@
   .host-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .host-row b { font-size: 12px; font-weight: 700; }
   .host-row em { font-style: normal; font-size: 11px; color: var(--mute); }
+  .host-row li.pending b { display: none; }
+  .host-row li.pending em { font-size: 12px; color: rgba(242,240,234,.72); }
   .logos-label { margin-top: 48px; font-size: 11px; }
   .logos { margin-top: 16px; }
 
@@ -395,6 +403,7 @@
 
   @media (max-width: 960px) {
     .spk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .spk-grid.pending { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .host-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .tcard.team .ticks { grid-template-columns: minmax(0, 1fr); }
   }
@@ -556,7 +565,7 @@
     <div class="wrap narrow">
       <h2 class="label" id="spk-title">The Speakers</h2>
       <p class="spk-lede" data-reveal>Eight on stage on Saturday. The line-up is being confirmed now and, as in every chapter, they are founders who built what they talk about. The waitlist hears the names first.</p>
-      <div class="spk-grid" data-reveal>
+      <div class="spk-grid pending" data-reveal>
         <article class="spk guest"><div class="ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-m"/></svg></div><h3>To be announced</h3><p class="area">Main stage · Sat 19</p></article>
         <article class="spk guest"><div class="ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></div><h3>To be announced</h3><p class="area">Main stage · Sat 19</p></article>
         <article class="spk guest"><div class="ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-m"/></svg></div><h3>To be announced</h3><p class="area">Main stage · Sat 19</p></article>
@@ -566,6 +575,7 @@
         <article class="spk guest"><div class="ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></div><h3>To be announced</h3><p class="area">Main stage · Sat 19</p></article>
         <article class="spk guest"><div class="ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-m"/></svg></div><h3>To be announced</h3><p class="area">Main stage · Sat 19</p></article>
       </div>
+      <p class="spk-pending-note">Eight names · announced soon</p>
       <div class="spk-foot">
         <p>Friday’s roundtables are led by industry experts across branding, YouTube, paid advertising, leadership, scaling and agency growth.</p>
         <a class="pill ghost" href="https://aplayerswaitlist.com/" target="_blank" rel="noopener">Hear the names first</a>
@@ -573,12 +583,12 @@
       <div class="hosts" data-reveal>
         <p class="label hosts-label">Friday roundtable hosts · The Study · VVIP &amp; Founders Day</p>
         <ul class="host-row">
-          <li><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-m"/></svg></span><b>To be announced</b><em>Branding</em></li>
-          <li><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></span><b>To be announced</b><em>Paid advertising</em></li>
-          <li><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></span><b>To be announced</b><em>YouTube</em></li>
-          <li><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></span><b>To be announced</b><em>Leadership</em></li>
-          <li><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-m"/></svg></span><b>To be announced</b><em>Scaling</em></li>
-          <li><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></span><b>To be announced</b><em>Agency growth</em></li>
+          <li class="pending"><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-m"/></svg></span><b>To be announced</b><em>Branding</em></li>
+          <li class="pending"><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></span><b>To be announced</b><em>Paid advertising</em></li>
+          <li class="pending"><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></span><b>To be announced</b><em>YouTube</em></li>
+          <li class="pending"><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></span><b>To be announced</b><em>Leadership</em></li>
+          <li class="pending"><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-m"/></svg></span><b>To be announced</b><em>Scaling</em></li>
+          <li class="pending"><span class="host-ph"><svg viewBox="0 0 100 110" aria-hidden="true"><use href="#person-f"/></svg></span><b>To be announced</b><em>Agency growth</em></li>
         </ul>
       </div>
     </div>
