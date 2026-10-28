@@ -2381,5 +2381,18 @@ body.spm-open { overflow: hidden; }
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !dlg.hidden) close(); });
 })();
 </script>
+<style>
+/* Typography: even the lines up and stop single words stranding,
+   which the hero line was doing badly at phone width. */
+.hp-pre, .hp-line, .hp-facts, .hp-mark h1, .h-serif, .spk-lede, .ven-lede,
+.city-sec h2, .itin .intro, .spm-lede, .spm-name { text-wrap: balance; }
+.ven-desc, .spm-sec p, .chap .desc, .city-copy p, .tix-note { text-wrap: pretty; }
+@media (max-width: 560px) {
+  /* the pay-off gets its own line rather than being cut in half */
+  .hp-line { font-size: 18px; line-height: 1.42; }
+  .hp-line em { display: block; margin-top: 3px; }
+  .hp-pre { white-space: nowrap; }
+}
+</style>
 </body>
 </html>
