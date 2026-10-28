@@ -2225,10 +2225,19 @@ body.spm-open { overflow: hidden; }
 @media (max-width: 860px) {
   .spm { padding: 0; }
   .spm-panel { grid-template-columns: minmax(0,1fr); max-height: 100vh; height: 100vh; border-radius: 0; border: 0;
-    grid-template-rows: clamp(210px,38vh,330px) minmax(0,1fr); }
+    grid-template-rows: clamp(260px,44vh,420px) minmax(0,1fr); }
+  /* The portraits are 3:4 and every face sits in the top third, so a centred
+     cover crop cuts heads off on a phone. Bias the crop upward and give the
+     frame more height, which reads as zooming out. */
+  .spm-ph img { object-position: 50% 10%; }
   .spm-ph::after { background: linear-gradient(180deg, rgba(8,10,8,0) 55%, rgba(21,24,21,.96) 100%); }
   .spm-name { font-size: 34px; }
   .spm-lede { font-size: 16px; }
+}
+/* Tablet portrait: same stacked panel, but a wider frame crops harder, so the
+   photo needs more height to keep the headroom. */
+@media (min-width: 561px) and (max-width: 860px) {
+  .spm-panel { grid-template-rows: clamp(380px,52vh,560px) minmax(0,1fr); }
 }
 @media (prefers-reduced-motion: reduce) { .spm-scrim, .spm-panel { animation: none; } }
 </style>
