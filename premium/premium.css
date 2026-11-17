@@ -1,0 +1,102 @@
+/*
+  A Players Dublin, the premium version. Laid over uplift/site.css, which it loads first: the same serif, the same
+  photographs, the same page. What changes is the colour. The cream of the daytime sections is gone; in its place
+  a deep colour with a little light in it, blue (the default) or green. The gold of the lettering stays, and is the
+  same gold that is foil on the tickets. The night sections go a shade deeper in the same colour.
+
+  The stylesheet underneath thinks in "paper" and "ink". Here paper is the deep colour and ink is the light type.
+*/
+html[data-look] {
+  --paper: var(--day); --paper-2: var(--day-2);
+  --ink: #F2F0EA; --ink-mute: rgba(242,240,234,.64);
+  --gold: #D9C293; --gold-lt: #D9C293;
+  --line-lt: rgba(242,240,234,.16);
+}
+html[data-look="blue"]  { --day: #121B3F; --day-2: #1A2656; --bg: #070B1C; --card: #0E1533; --card-2: #151E47; --bgrgb: 7,11,28;  --glow: 132,150,236; }
+html[data-look="green"] { --day: #0F2A1E; --day-2: #163827; --bg: #06130C; --card: #0C2117; --card-2: #132E20; --bgrgb: 6,19,12;  --glow: 150,196,104; }
+
+/* a little grain over everything, as film has */
+body::after { content: ""; position: fixed; inset: 0; z-index: 70; pointer-events: none; opacity: .09; mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* ---------- the deep colour is lit, not flat: light falls in from one corner of each daytime section ---------- */
+.day-ground { background:
+  radial-gradient(1100px 760px at 88% 0%, rgba(var(--glow), .17), rgba(var(--glow), 0) 70%),
+  var(--paper); }
+.nav.solid { background: rgba(var(--bgrgb), .84); }
+.hero { background: var(--bg); }
+.hero::after { background: linear-gradient(180deg, rgba(var(--bgrgb), .64) 0%, rgba(var(--bgrgb), .22) 24%, rgba(var(--bgrgb), .5) 56%, rgba(var(--bgrgb), .97) 100%); }
+.stage::after { background: linear-gradient(transparent, rgba(var(--bgrgb), .6)); }
+.venue-shots img { filter: saturate(.88) contrast(1.03); }
+.venue-shots figure::after { background: linear-gradient(transparent, rgba(var(--bgrgb), .66)); }
+.venue-shots figcaption { color: var(--fg); }
+.night .venue-shots img { filter: saturate(.92) contrast(1.02); }
+.venue-shots.carpet .big img { object-position: 50% 96%; filter: saturate(1) contrast(1.03); }
+.venue-shots.carpet .big::after { inset: 80% 0 0; }
+.reel::after { background: linear-gradient(180deg, rgba(var(--bgrgb), .5), transparent 26%, transparent 70%, var(--bg)); }
+.spk-more::after { background: linear-gradient(180deg, rgba(var(--bgrgb), .55) 0, rgba(var(--bgrgb), .22) 36%, rgba(var(--bgrgb), .93) 100%); }
+
+/* ---------- small things that assumed dark type on cream ---------- */
+.spk .tag { background: var(--gold-lt); color: #15181A; }
+.spk-more .pill.solid { background: var(--fg); color: #14181A; border-color: var(--fg); }
+.spk-more .pill.solid:hover, .day-ground .pill.solid:hover, .pill.solid:hover { background: var(--gold-lt); border-color: var(--gold-lt); color: #14181A; }
+.pill.solid, .day-ground .pill.solid { color: #14181A; }
+.bar { background: rgba(var(--bgrgb), .86); color: var(--fg); border: 1px solid rgba(242,240,234,.26); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.bar .pill { background: var(--fg); color: #14181A; border-color: var(--fg); }
+.bar .dim { color: rgba(242,240,234,.6); }
+dialog { background: var(--paper); border: 1px solid rgba(242,240,234,.22); }
+.dlg-x { color: #14181A; }
+.prof .p-txt p.b { color: rgba(242,240,234,.82); }
+.prof ul { color: rgba(242,240,234,.82); }
+.form input, .form select { border-color: rgba(242,240,234,.3); background: rgba(255,255,255,.05); color: var(--fg); }
+.form select option { color: #14181A; }
+.form .picks label { border-color: rgba(242,240,234,.3); }
+.form .picks label:has(input:checked) { color: #14181A; }
+.form .go .pill { color: #14181A; }
+
+/* ---------- the two signed books: the photograph, in the at-a-glance picture and on the books' own line ---------- */
+.six li.has-books { grid-template-columns: 54px 1fr auto; }
+.six li.has-books > img { display: block; grid-column: 3; grid-row: 1; align-self: center; width: clamp(92px, 8.4vw, 140px); aspect-ratio: 4 / 5; object-fit: cover; margin-left: clamp(16px, 2.4vw, 40px); border-radius: 2px;
+  box-shadow: 0 18px 34px -14px rgba(0,0,0,.7); transition: transform .6s var(--ease); }
+.six li.has-books.on > img { transform: scale(1.04); }
+@media (max-width: 900px) {
+  .six li.has-books { grid-template-columns: 40px 1fr; }
+  .six li.has-books > img { grid-row: 1; grid-column: 1 / -1; width: 100%; aspect-ratio: 5 / 4; object-position: 50% 42%; margin: 0 0 16px; box-shadow: none; transform: none; }
+}
+
+/* ---------- the tickets: the photograph, then what each one includes ---------- */
+.tk-shot { position: relative; margin: clamp(40px, 5vw, 80px) 0 0; overflow: hidden; border-radius: 3px; background: #1a120c; }
+.tk-shot img { width: 100%; height: clamp(280px, 52vw, 780px); object-fit: cover; object-position: 50% 52%; }
+html[data-look="blue"] .for-green, html[data-look="green"] .for-blue { display: none; }
+.tk-shot::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 160px rgba(0,0,0,.5); }
+.tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(26px, 3.6vw, 64px); margin-top: clamp(36px, 4.4vw, 70px); }
+.tier { display: flex; flex-direction: column; padding-top: 22px; border-top: 1px solid var(--fg); }
+.tier .k { color: var(--mute); font-size: 10px; }
+.tier.pick .k { color: var(--gold-lt); }
+.tier h3 { margin-top: 14px; font-size: clamp(40px, 3.9vw, 66px); line-height: .96; letter-spacing: -.012em; }
+.tier h3 em, .team-line h3 em { font-style: italic; color: var(--gold-lt); }
+.tier .days { margin-top: 10px; font: italic 400 clamp(19px, 1.5vw, 24px)/1.2 var(--serif); color: rgba(242,240,234,.74); }
+.tier ul { list-style: none; margin: 22px 0 0; padding: 0; font-size: 17.5px; line-height: 1.35; }
+.tier li { padding: 9px 0 9px 18px; position: relative; border-top: 1px solid var(--line); }
+.tier li::before { content: ""; position: absolute; left: 0; top: 19px; width: 7px; height: 1px; background: var(--gold-lt); }
+.tier .meta { margin: auto 0 0; padding: 22px 0 16px; color: var(--mute); font-size: 9.5px; }
+.tier .pill { width: 100%; }
+.team-line { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.5fr) auto; gap: clamp(20px, 3.6vw, 64px); align-items: center; margin-top: clamp(40px, 5vw, 76px); padding: 26px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.team-line .k { color: var(--mute); font-size: 10px; }
+.team-line h3 { margin-top: 10px; font-size: clamp(32px, 3vw, 50px); line-height: 1; }
+.team-line p:not(.label) { color: rgba(242,240,234,.74); font-size: 17.5px; max-width: 34em; }
+@media (max-width: 900px) {
+  .tiers { grid-template-columns: 1fr; gap: 44px; }
+  .team-line { grid-template-columns: 1fr; }
+  .team-line .pill { width: 100%; }
+  .tk-shot img { height: clamp(240px, 70vw, 520px); object-position: 46% 52%; }
+}
+
+/* ---------- review only: two swatches at the left edge switch the colour ---------- */
+.looks { position: fixed; z-index: 45; left: 0; top: 50%; transform: translateY(-50%); display: grid; gap: 1px; padding: 8px 6px; background: rgba(var(--bgrgb), .8); border: 1px solid rgba(242,240,234,.26); border-left: 0; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.looks span { writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px 0 10px; font-size: 8.5px; color: rgba(242,240,234,.6); justify-self: center; }
+.looks button { width: 30px; height: 30px; border: 1.5px solid transparent; position: relative; }
+.looks button::before { content: ""; position: absolute; inset: 4px; background: var(--sw); }
+.looks [data-look-set="blue"] { --sw: #1A2656; } .looks [data-look-set="green"] { --sw: #163827; }
+html[data-look="blue"] .looks [data-look-set="blue"], html[data-look="green"] .looks [data-look-set="green"] { border-color: var(--fg); }
+@media (max-width: 620px) { .looks { top: auto; bottom: 84px; transform: none; padding: 5px 4px; } .looks span { display: none; } .looks button { width: 26px; height: 26px; } }

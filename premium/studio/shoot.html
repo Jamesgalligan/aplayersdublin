@@ -1,0 +1,183 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>The studio: path-traced stills of the books and the tickets</title>
+<!--
+  A tool, not part of the site. It renders the page's two product photographs with real light (a path tracer), on a
+  photoscanned walnut table, and the result is saved as a JPG the page then uses.
+    shoot.html?shot=books                      the two signed books and a pen
+    shoot.html?shot=tickets&look=blue|green    the three tickets
+  Other switches: w, h (pixels), spp (samples; more is cleaner and slower), env, exp (exposure).
+  Everything it loads is free to use: three.js, three-gpu-pathtracer, and Poly Haven's CC0 materials in assets/.
+-->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>html, body { margin: 0; background: #000; } canvas { display: block; }</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/",
+  "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/",
+  "three-mesh-bvh": "https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.6/build/index.module.js",
+  "three-gpu-pathtracer": "https://cdn.jsdelivr.net/npm/three-gpu-pathtracer@0.0.23/build/index.module.js"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { WebGLPathTracer, PhysicalCamera, ShapedAreaLight } from 'three-gpu-pathtracer';
+
+const Q = new URLSearchParams(location.search);
+const SHOT = Q.get('shot') || 'books', LOOK = Q.get('look') || 'blue';
+const W = +(Q.get('w') || 1200), H = +(Q.get('h') || 1500), SPP = +(Q.get('spp') || 300);
+const num = (k, d) => (Q.has(k) ? +Q.get(k) : d);
+
+const renderer = new THREE.WebGLRenderer({ antialias: false, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = num('exp', 1);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const tl = new THREE.TextureLoader();
+const load = (u, srgb, max = 2048) => tl.loadAsync(u).then((t0) => {
+  const im = t0.image, k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas');
+  c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+  const t = new THREE.CanvasTexture(c); if (srgb) t.colorSpace = THREE.SRGBColorSpace; return t;
+});
+const tile = (t, n) => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(n, n); return t; };
+
+/* ---------- light: a dim studio all round, and one warm soft box as the key ---------- */
+const env = await new RGBELoader().setDataType(THREE.FloatType).loadAsync('assets/' + (Q.get('env') || 'studio_small_08') + '_1k.hdr');
+env.mapping = THREE.EquirectangularReflectionMapping;
+scene.environment = env; scene.environmentIntensity = num('envi', 0.3); scene.environmentRotation.y = num('envr', 2.2);
+scene.background = new THREE.Color(0x050505);
+const key = new ShapedAreaLight(new THREE.Color(Q.get('keyc') || '#ffd8ae'), num('key', 9), 0.9, 0.6);
+key.position.set(num('kx', -0.75), num('ky', 0.85), num('kz', -0.55)); key.lookAt(0, 0, 0); scene.add(key);
+const rim = new ShapedAreaLight(new THREE.Color('#cfe0ff'), num('rim', 1.5), 0.5, 0.3);
+rim.position.set(0.9, 0.5, 0.7); rim.lookAt(0, 0, 0); scene.add(rim);
+const top = new ShapedAreaLight(new THREE.Color(Q.get('topc') || '#fff1dc'), num('top', SHOT === 'tickets' ? 7 : 0), num('tw', 0.7), num('th', 0.34));
+top.position.set(num('tlx', 0.12), num('tly', 0.9), num('tlz', -0.62)); top.lookAt(0, 0, 0); if (top.intensity > 0) scene.add(top);
+
+/* ---------- the table: photoscanned walnut veneer ---------- */
+const wood = Q.get('wood') || 'smoked_walnut_veneer';
+const D = (Q.get('dbg') || '').split(',');
+const tableMat = { color: new THREE.Color(Q.get('woodc') || '#8f8076'), roughness: D.includes('norough') ? 0.6 : 1, };
+if (!D.includes('nomap')) tableMat.map = tile(await load('assets/' + wood + '_diff.jpg', true), D.includes('norepeat') ? 1 : 4);
+if (!D.includes('norough')) tableMat.roughnessMap = tile(await load('assets/' + wood + '_rough.jpg'), D.includes('norepeat') ? 1 : 4);
+if (!D.includes('nonormal')) { tableMat.normalMap = tile(await load('assets/' + wood + '_nor.jpg'), D.includes('norepeat') ? 1 : 4); tableMat.normalScale = new THREE.Vector2(0.6, 0.6); }
+const table = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), new THREE.MeshPhysicalMaterial(tableMat));
+table.rotation.x = -Math.PI / 2; table.rotation.z = num('grain', 0.5); scene.add(table);
+
+/* ---------- small helpers ---------- */
+function averageColour(tex, x0, y0, x1, y1) {
+  const im = tex.image, c = document.createElement('canvas'); c.width = 64; c.height = 64;
+  const g = c.getContext('2d'); g.drawImage(im, im.width * x0, im.height * y0, im.width * (x1 - x0), im.height * (y1 - y0), 0, 0, 64, 64);
+  const d = g.getImageData(0, 0, 64, 64).data; let r = 0, gg = 0, b = 0;
+  for (let i = 0; i < d.length; i += 4) { r += d[i]; gg += d[i + 1]; b += d[i + 2]; }
+  const n = d.length / 4; return new THREE.Color().setRGB(r / n / 255, gg / n / 255, b / n / 255, THREE.SRGBColorSpace);
+}
+function canvasTexture(w, h, draw, srgb = true) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); if (srgb) t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+/* the edge of a block of pages: fine lines, slightly uneven */
+function pagesTexture(vertical) {
+  return canvasTexture(512, 512, (g, w, h) => {
+    g.fillStyle = '#e9e5da'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 260; i++) {
+      const p = Math.random() * w, a = 0.05 + Math.random() * 0.16;
+      g.fillStyle = Math.random() > 0.5 ? `rgba(60,52,40,${a})` : `rgba(255,255,255,${a})`;
+      if (vertical) g.fillRect(p, 0, 1 + Math.random(), h); else g.fillRect(0, p, w, 1 + Math.random());
+    }
+  });
+}
+
+/* ---------- a hardback: two boards and a spine wrapped in its jacket, and the block of pages set in from three edges.
+   Every part is its own mesh with one material: the path tracer mixed up surfaces when a mesh carried several. ---------- */
+function makeBook(o) {
+  const g = new THREE.Group(), b = 0.0028, over = 0.0032, lift = 0.00012, { w, h, t } = o;
+  const jacket = (extra) => new THREE.MeshPhysicalMaterial(Object.assign({ color: o.colour, roughness: o.gloss ? 0.3 : 0.58 }, extra));
+  const plain = jacket({});
+  const part = (geo, mat, x, y, z, ry, rx) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); if (ry) m.rotation.y = ry; if (rx) m.rotation.x = rx; g.add(m); return m; };
+  part(new THREE.BoxGeometry(w, h, b), plain, 0, 0, (t - b) / 2);                                     /* front board */
+  part(new THREE.PlaneGeometry(w, h), jacket({ map: o.cover, color: 0xffffff }), 0, 0, t / 2 + lift);   /* the cover, printed on it */
+  part(new THREE.BoxGeometry(w, h, b), plain, 0, 0, -(t - b) / 2);                                    /* back board */
+  part(new THREE.BoxGeometry(b, h, t), plain, -w / 2 + b / 2, 0, 0);                                  /* spine */
+  if (o.spine) part(new THREE.PlaneGeometry(t, h), jacket({ map: o.spine, color: 0xffffff }), -w / 2 - lift, 0, 0, -Math.PI / 2);
+  const pw = w - b - over, ph = h - over * 2, pt = t - b * 2, px = (b - over) / 2;
+  part(new THREE.BoxGeometry(pw, ph, pt), new THREE.MeshPhysicalMaterial({ color: 0xe6e1d5, roughness: 0.95 }), px, 0, 0);            /* the pages */
+  const lined = (v) => new THREE.MeshPhysicalMaterial({ map: pagesTexture(v), roughness: 0.95 });
+  part(new THREE.PlaneGeometry(pt, ph), lined(true), px + pw / 2 + lift, 0, 0, Math.PI / 2);                 /* fore-edge */
+  part(new THREE.PlaneGeometry(pw, pt), lined(false), px, ph / 2 + lift, 0, 0, -Math.PI / 2);                 /* head */
+  part(new THREE.PlaneGeometry(pw, pt), lined(false), px, -ph / 2 - lift, 0, 0, Math.PI / 2);                 /* tail */
+  return g;
+}
+/* a spine's lettering, set along its length */
+function spineTexture(colour, ink, title, author, face) {
+  return canvasTexture(256, 2048, (g, w, h) => {
+    g.fillStyle = colour; g.fillRect(0, 0, w, h);
+    g.save(); g.translate(w / 2, h / 2); g.rotate(Math.PI / 2); g.fillStyle = ink; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = face.replace('SIZE', '118'); g.fillText(title, -180, 6);
+    g.font = face.replace('SIZE', '62'); g.fillText(author, 760, 8); g.restore();
+  });
+}
+
+const cam = new PhysicalCamera(num('fov', 30), W / H, 0.05, 20);
+let target = new THREE.Vector3(0, 0.02, 0);
+
+if (D.includes('empty')) { cam.position.set(0.03, 0.6, 0.4); const s = new THREE.Mesh(new THREE.SphereGeometry(0.05, 32, 16), new THREE.MeshPhysicalMaterial({ color: 0xcc3333, roughness: 0.4 })); s.position.y = 0.05; scene.add(s); }
+else if (SHOT === 'books') {
+  const cA = await load('assets/purposeful-decision-maker.jpg', true), cB = await load('assets/buy-back-your-time.jpg', true);
+  const colA = averageColour(cA, 0.02, 0.4, 0.08, 0.6), colB = averageColour(cB, 0.02, 0.45, 0.08, 0.55);
+  const hex = (c) => '#' + c.getHexString(THREE.SRGBColorSpace);
+  const A = makeBook({ w: 0.152, h: 0.229, t: 0.024, cover: cA, colour: colA,
+    spine: spineTexture(hex(colA), '#141414', 'THE PURPOSEFUL DECISION MAKER', 'Ó CÉIDIGH', '700 SIZEpx "DIN Condensed", "Avenir Next Condensed", "Arial Narrow", sans-serif') });
+  const B = makeBook({ w: 0.156, h: 0.235, t: 0.031, cover: cB, colour: colB, gloss: true,
+    spine: spineTexture(hex(colB), '#ffffff', 'BUY BACK YOUR TIME', 'DAN MARTELL', '800 SIZEpx "Avenir Next", "Helvetica Neue", Arial, sans-serif') });
+  /* both lie on the table, covers up: the blue one square-ish at the back, the cream one across its corner */
+  B.rotation.set(-Math.PI / 2, 0, num('bz', 0.2)); B.position.set(num('bx', -0.062), 0.031 / 2, num('by', -0.045)); scene.add(B);
+  /* The cream book leans on the blue one: its right edge on the table, its underside on the blue book's front corner.
+     Worked out, not guessed: with the underside meeting the blue book's top (0.031 up) 0.11 along from the edge on the
+     table, the lean is asin(0.031 / 0.11), and the book's centre sits where that puts it. Nothing passes through anything. */
+  const wA = 0.152, tA = 0.024, tB = 0.031, reach = 0.11, lean = Math.asin(tB / reach);
+  const holder = new THREE.Group(); A.rotation.set(-Math.PI / 2, 0, 0); holder.add(A);
+  holder.rotation.set(0, num('ay', -0.33), -lean);
+  holder.position.set(num('ax', 0.0601), (wA / 2) * Math.sin(lean) + (tA / 2) * Math.cos(lean) + 0.0005, num('az', 0.0999));
+  scene.add(holder);
+
+  /* the pen the copies were signed with: black lacquer, gold fittings */
+  const pen = new THREE.Group();
+  const lacquer = new THREE.MeshPhysicalMaterial({ color: 0x0b0b0d, roughness: 0.16 });
+  const gold = new THREE.MeshPhysicalMaterial({ color: 0xd9b56a, metalness: 1, roughness: 0.24 });
+  const cyl = (r, len, mat, x, r2) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r2 === undefined ? r : r2, r, len, 48), mat); m.rotation.z = Math.PI / 2; m.position.x = x; pen.add(m); return m; };
+  cyl(0.0058, 0.070, lacquer, -0.031);               /* barrel */
+  cyl(0.0062, 0.060, lacquer, 0.036);                /* cap */
+  cyl(0.0064, 0.0045, gold, 0.0045);                 /* the band where they meet */
+  cyl(0.0064, 0.003, gold, 0.0655);                  /* the cap's end ring */
+  cyl(0.0058, 0.012, gold, -0.072, 0.003);           /* the tapered end */
+  const clip = new THREE.Mesh(new THREE.BoxGeometry(0.044, 0.0014, 0.0026), gold); clip.position.set(0.04, 0.0068, 0); pen.add(clip);
+  pen.rotation.y = num('pr', 0.5); pen.position.set(num('px', -0.1), 0.0064, num('pz', 0.172)); scene.add(pen);
+
+  cam.position.set(num('cx', 0.03), num('cy', 0.6), num('cz', 0.4)); target.set(num('tx', 0.005), 0.012, num('tz', 0.018));
+  cam.fStop = num('f', 3.2);
+} else {
+  /* ---------- the three tickets: printed card with foil lettering, laid across each other (tickets.js draws them) ---------- */
+  const { addTickets } = await import('./tickets.js');
+  await addTickets({ THREE, scene, canvasTexture, look: LOOK, num });
+  cam.position.set(num('cx', 0.0), num('cy', 0.44), num('cz', 0.31)); target.set(num('tx', 0.006), 0, num('tz', 0.006));
+  cam.fStop = num('f', 9);
+}
+cam.lookAt(target); cam.focusDistance = cam.position.distanceTo(target) + num('fd', 0); cam.updateMatrixWorld();
+
+const pt = new WebGLPathTracer(renderer);
+pt.bounces = 6; pt.renderScale = 1; pt.tiles.set(2, 2); pt.dynamicLowRes = false; pt.minSamples = 1; pt.renderDelay = 0; pt.fadeDuration = 0;
+pt.textureSize.set(num('tex', 2048), num('tex', 2048)); pt.filterGlossyFactor = 0.4;
+if (Q.has('raster')) { renderer.render(scene, cam); window.done = Promise.resolve(1); throw new Error('raster only'); }
+pt.setScene(scene, cam);
+
+window.done = new Promise((ok) => {
+  (function loop() {
+    pt.renderSample();
+    document.title = Math.floor(pt.samples) + ' / ' + SPP;
+    if (pt.samples >= SPP) ok(Math.floor(pt.samples)); else requestAnimationFrame(loop);
+  })();
+});
+</script>
