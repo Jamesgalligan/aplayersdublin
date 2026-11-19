@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terms · A Players Dublin</title>
+  <meta name="description" content="The terms of use of the A Players Dublin website." />
+  <meta name="theme-color" content="#03150D" />
+  <meta property="og:title" content="Terms · A Players Dublin" />
+  <meta property="og:description" content="The terms of use of the A Players Dublin website." />
+  <meta property="og:type" content="website" />
+  <link rel="preload" href="/fonts/museum-Regular.otf" as="font" type="font/otf" crossorigin />
+  <link rel="preload" href="/fonts/denim-Medium.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="icon" href="/favicon.ico?v=d2" sizes="any" />
+  <link rel="icon" href="/favicon.svg?v=d2" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=d2" />
+  <!-- The live site's tracking, unchanged: Google Tag Manager and the A Players script load only on aplayersdublin.com, so
+       previews never count as visits; the dataLayer helper (GTDL) runs everywhere because the forms call it. -->
+  <script>
+  if (/(^|\.)aplayersdublin\.com$/.test(location.hostname)) {
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WL5TT2WF');
+  (function(){ var s=document.createElement('script'); s.src='https://go.theaplayersclub.com/api/js/latest.js'; document.head.appendChild(s); })();
+  }
+  </script>
+  <script>
+
+  /* Every browser tag lives in GTM-WL5TT2WF. This file only pushes named
+     events onto window.dataLayer; it never calls a vendor directly. */
+  window.dataLayer = window.dataLayer || [];
+  window.GTDL = (function () {
+    var CITY = "dublin";
+    var ID = "343bdc46-d940-4ce1-9dfb-e7068a5d6aea";
+    var seen = {};
+    function first(key) {
+      if (seen[key]) return false;
+      seen[key] = true;
+      try {
+        if (localStorage.getItem("gt_dl_" + key)) return false;
+        localStorage.setItem("gt_dl_" + key, String(Date.now()));
+      } catch (e) {}
+      return true;
+    }
+    function push(name, fields) {
+      var out = { event: name, event_city: CITY, event_id: ID };
+      Object.keys(fields || {}).forEach(function (k) {
+        var v = fields[k];
+        if (v !== undefined && v !== null && v !== "") out[k] = v;
+      });
+      window.dataLayer.push(out);
+      try { console.log("[dataLayer] " + name, JSON.stringify(out)); } catch (e) {}
+      return out;
+    }
+    /* once per visitor, for the steps that are a milestone rather than an action */
+    function once(name, fields) { return first(name) ? push(name, fields) : null; }
+    /* once per key, for purchases: a refresh must not count twice */
+    function onceFor(key, name, fields) { return first(name + ":" + key) ? push(name, fields) : null; }
+    return { push: push, once: once, onceFor: onceFor, city: CITY, id: ID };
+  })();
+  document.addEventListener("DOMContentLoaded", function () {
+    ["co-form", "tm-form", "vv-form"].forEach(function (id) {
+      var f = document.getElementById(id);
+      if (!f) return;
+      var fire = function () { GTDL.once("event_form_start"); };
+      f.addEventListener("focusin", fire);
+      f.addEventListener("input", fire);
+    });
+  });
+  </script>
+  <script type="module" crossorigin src="/assets/main-Crih8f0G.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-HQrQuZ3r.css">
+</head>
+<body class="is-loading" data-page="terms">
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL5TT2WF" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <header class="nav">
+    <a class="nav__logo nav__logo--chapter" href="/" aria-label="A Players Dublin, home" data-chapter></a>
+    <nav class="nav__links label" aria-label="Dublin">
+      <a href="/#speakers">Speakers</a>
+      <a href="/#weekend">The weekend</a>
+      <a href="/#venues">Venues</a>
+      <a href="/#tickets">Tickets</a>
+    </nav>
+    <div class="nav__right">
+      <button class="nav__menu label" type="button" aria-expanded="false" aria-controls="menu">
+        <span class="nav__menu-icon" aria-hidden="true"><i></i><i></i></span>
+        <span data-menu-label>Menu</span>
+      </button>
+      <a class="btn" href="/#tickets">Reserve</a>
+    </div>
+  </header>
+
+  <div class="menu" id="menu" aria-hidden="true" inert>
+    <nav class="menu__run" aria-label="The houses of A Players"></nav>
+    <div class="menu__peek" aria-hidden="true"></div>
+    <div class="menu__foot label">
+      <p class="menu__note"><span data-menu-status></span><span data-menu-note>The houses of A Players</span></p>
+      <a href="https://www.instagram.com/aplayerstour/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </div>
+
+  <main id="top">
+
+    <section class="legal" data-ground="navy" aria-labelledby="legal-title">
+      <p class="label sec-label">Terms</p>
+      <div class="legal__body">
+        <h1 class="legal__title" id="legal-title">Terms of use</h1>
+        <p class="label legal__date">Last updated 19 November 2026</p>
+
+        <h2>About these terms</h2>
+        <p>These terms apply to your use of this website, run by A Players in Dublin, Ireland. By using the site you accept them. For any question about them, write to <a href="mailto:hello@aplayerstour.com">hello@aplayerstour.com</a>.</p>
+
+        <h2>Tickets</h2>
+        <p>Tickets are sold through Whop, and the terms shown at checkout apply to your purchase. VVIP seats are by application, and we decide whether to offer one; applying does not guarantee a seat. Team seats are agreed separately with each company. Flights and accommodation are not included in any ticket.</p>
+
+        <h2>The event</h2>
+        <p>Details such as speakers, venues, times and the programme may change before the weekend. If something important changes, we will tell ticket holders by email.</p>
+
+        <h2>Results and testimonials</h2>
+        <p>The quotes on this site are guests' own accounts of earlier events. They are not a promise of what anyone else will take from the weekend.</p>
+
+        <h2>Other sites</h2>
+        <p>Links to other sites, including the other houses and chapters of A Players, are for your convenience, and we are not responsible for their content.</p>
+
+        <h2>Our content</h2>
+        <p>The words, photographs, marks and design of this site belong to A Players or are used with permission. Please do not copy or reuse them without our written permission.</p>
+
+        <h2>Liability</h2>
+        <p>We work to keep the site accurate and available, but we cannot guarantee that it is always either. Nothing in these terms limits any right you have under consumer law.</p>
+
+        <h2>Governing law</h2>
+        <p>These terms are governed by the law of Ireland, and the Irish courts have jurisdiction over any dispute about them.</p>
+
+        <h2>Changes to these terms</h2>
+        <p>If we change these terms, we will post the new version on this page with the date it was updated.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot" id="footer" data-foot>
+    <div class="foot__cta">
+      <p class="foot__ask">The last weekend of the year. Be in the room.</p>
+      <a class="btn btn--lg" href="/#tickets">Reserve my seat</a>
+    </div>
+    <nav class="foot__cols" aria-label="Footer">
+      <div class="foot__brand"><span class="foot__small" data-foot-seal aria-hidden="true"></span></div>
+      <div class="foot__housecol">
+        <p class="label">The houses</p>
+        <ul data-foot-house-list></ul>
+      </div>
+      <div>
+        <p class="label">The weekend</p>
+        <ul>
+          <li><a href="/#speakers">Speakers</a></li>
+          <li><a href="/#weekend">Itinerary</a></li>
+          <li><a href="/#venues">Venues</a></li>
+          <li><a href="/#tour">The Global Tour</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Seats</p>
+        <ul>
+          <li><a href="/#tickets">Tickets</a></li>
+          <li><a href="/#tickets">Teams</a></li>
+          <li><a href="/#faq">Questions</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Follow</p>
+        <ul>
+          <li><a href="https://www.instagram.com/aplayerstour/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.youtube.com/@Jamesgalligann" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Write to us</p>
+        <ul><li><a href="mailto:hello@aplayerstour.com">hello<wbr>@aplayerstour.com</a></li></ul>
+      </div>
+    </nav>
+    <div class="foot__sig" aria-hidden="true">
+      <span class="foot__hound" data-foot-hound></span>
+      <span class="foot__word" data-foot-lockup></span>
+    </div>
+    <div class="foot__base label">
+      <span>&copy; 2026 A Players</span>
+      <span>The founding chapter</span>
+      <span class="foot__legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></span>
+      <a class="foot__by" href="https://kreya.design" target="_blank" rel="noopener">by KREYA</a>
+    </div>
+  </footer>
+
+</body>
+</html>
